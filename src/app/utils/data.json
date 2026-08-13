@@ -1,0 +1,205 @@
+[
+  {
+    "name": "Dr. Amina Rahman",
+    "specialization": "Cardiology",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0132",
+    "email": "amina.rahman@doctorly.app"
+  },
+  {
+    "name": "Dr. Samuel Osei",
+    "specialization": "Pediatrics",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0187",
+    "email": "samuel.osei@doctorly.app"
+  },
+  {
+    "name": "Dr. Layla Haddad",
+    "specialization": "Dermatology",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0119",
+    "email": "layla.haddad@doctorly.app"
+  },
+  {
+    "name": "Dr. Marcus Chen",
+    "specialization": "Orthopedics",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0164",
+    "email": "marcus.chen@doctorly.app"
+  },
+  {
+    "name": "Dr. Priya Nair",
+    "specialization": "Neurology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0155",
+    "email": "priya.nair@doctorly.app"
+  },
+  {
+    "name": "Dr. Tobias Weber",
+    "specialization": "Cardiology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0178",
+    "email": "tobias.weber@doctorly.app"
+  },
+  {
+    "name": "Dr. Grace Kim",
+    "specialization": "Pediatrics",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0142",
+    "email": "grace.kim@doctorly.app"
+  },
+  {
+    "name": "Dr. Elena Torres",
+    "specialization": "Endocrinology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0193",
+    "email": "elena.torres@doctorly.app"
+  },
+  {
+    "name": "Dr. Farid Kassem",
+    "specialization": "Orthopedics",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0128",
+    "email": "farid.kassem@doctorly.app"
+  },
+  {
+    "name": "Dr. Chloe Bennett",
+    "specialization": "Psychiatry",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0201",
+    "email": "chloe.bennett@doctorly.app"
+  },
+  {
+    "name": "Dr. Tariq Al-Mansoor",
+    "specialization": "Gastroenterology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0202",
+    "email": "tariq.almansoor@doctorly.app"
+  },
+  {
+    "name": "Dr. Sofia Rossi",
+    "specialization": "Ophthalmology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0203",
+    "email": "sofia.rossi@doctorly.app"
+  },
+  {
+    "name": "Dr. Lucas Silva",
+    "specialization": "Urology",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0204",
+    "email": "lucas.silva@doctorly.app"
+  },
+  {
+    "name": "Dr. Mei-Ling Vance",
+    "specialization": "Oncology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0205",
+    "email": "meiling.vance@doctorly.app"
+  },
+  {
+    "name": "Dr. Arthur Pendelton",
+    "specialization": "Rheumatology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0206",
+    "email": "arthur.pendelton@doctorly.app"
+  },
+  {
+    "name": "Dr. Fatimah Zahra",
+    "specialization": "Pulmonology",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0207",
+    "email": "fatimah.zahra@doctorly.app"
+  },
+  {
+    "name": "Dr. David O'Connor",
+    "specialization": "General Surgery",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0208",
+    "email": "david.oconnor@doctorly.app"
+  },
+  {
+    "name": "Dr. Ananya Iyer",
+    "specialization": "Nephrology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0209",
+    "email": "ananya.iyer@doctorly.app"
+  },
+  {
+    "name": "Dr. Mateo Hernandez",
+    "specialization": "ENT (Otolaryngology)",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0210",
+    "email": "mateo.hernandez@doctorly.app"
+  },
+  {
+    "name": "Dr. Hannah Lindqvist",
+    "specialization": "Obstetrics & Gynecology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0211",
+    "email": "hannah.lindqvist@doctorly.app"
+  },
+  {
+    "name": "Dr. Kenneth Washington",
+    "specialization": "Anesthesiology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0212",
+    "email": "kenneth.washington@doctorly.app"
+  },
+  {
+    "name": "Dr. Youssef El-Hawary",
+    "specialization": "Cardiology",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0213",
+    "email": "youssef.elhawary@doctorly.app"
+  },
+  {
+    "name": "Dr. Isabella Santos",
+    "specialization": "Dermatology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0214",
+    "email": "isabella.santos@doctorly.app"
+  },
+  {
+    "name": "Dr. Jin-Woo Park",
+    "specialization": "Neurology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0215",
+    "email": "jinwoo.park@doctorly.app"
+  },
+  {
+    "name": "Dr. Naomi Campbell",
+    "specialization": "Pediatrics",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0216",
+    "email": "naomi.campbell@doctorly.app"
+  },
+  {
+    "name": "Dr. Oliver Taylor",
+    "specialization": "Allergy & Immunology",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0217",
+    "email": "oliver.taylor@doctorly.app"
+  },
+  {
+    "name": "Dr. Nadia Bekele",
+    "specialization": "Hematology",
+    "hospital": "St. Xavier Medical Center",
+    "phone": "+1 415 555 0218",
+    "email": "nadia.bekele@doctorly.app"
+  },
+  {
+    "name": "Dr. Viktor Kozlov",
+    "specialization": "Neurosurgery",
+    "hospital": "Green Valley Hospital",
+    "phone": "+1 415 555 0219",
+    "email": "viktor.kozlov@doctorly.app"
+  },
+  {
+    "name": "Dr. Sarah Jenkins",
+    "specialization": "Internal Medicine",
+    "hospital": "Riverside Clinic",
+    "phone": "+1 415 555 0220",
+    "email": "sarah.jenkins@doctorly.app"
+  }
+]

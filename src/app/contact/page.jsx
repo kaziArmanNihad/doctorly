@@ -1,5 +1,5 @@
-"use client"
- 
+"use client";
+
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { Mail, Phone, MapPin, Clock, Send, Loader2 } from "lucide-react";

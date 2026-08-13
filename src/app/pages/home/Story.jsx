@@ -9,14 +9,14 @@ function AboutStory() {
             Why we built this
           </span>
           <h2 className="font-serif-display mt-3 text-[26px] font-[560] text-[#0F1F1B]">
-            A patient's history shouldn't depend on who's on shift
+            A patient&#39;s history shouldn&#39;t depend on who&#39;s on shift
           </h2>
           <p className="mt-4 text-[14.5px] leading-relaxed text-[#5C6863]">
             Clinics were tracking patients across notebooks, shared
             spreadsheets, and memory. A condition noted in one visit would
             quietly disappear by the next. Doctorly started as a simple
             question: what would it take for every doctor in a clinic to see a
-            patient's full, accurate picture in seconds — and for every patient
+            patient&#39;s full, accurate picture in seconds — and for every patient
             to trust that picture was being kept safe?
           </p>
           <p className="mt-4 text-[14.5px] leading-relaxed text-[#5C6863]">
@@ -30,11 +30,11 @@ function AboutStory() {
         <div className="rounded-xl border border-[#DCE3DC] bg-white p-7">
           <Quote size={22} className="text-[#E0A94A]" />
           <p className="font-serif-display mt-4 text-[19px] leading-snug text-[#16241F]">
-            A patient shouldn't have to repeat their own history because the
-            last clinic's notes never made it to this one.
+            A patient shouldn&#39;t have to repeat their own history because the
+            last clinic&#39;s notes never made it to this one.
           </p>
           <p className="mt-4 text-[13px] text-[#8A938D]">
-            The idea that shaped Doctorly's first version
+            The idea that shaped Doctorly&#39;s first version
           </p>
         </div>
       </div>

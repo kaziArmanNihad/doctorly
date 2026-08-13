@@ -1,31 +1,22 @@
-"use client";
-
-import { Activity, ArrowRight, Menu, X } from "lucide-react";
+import { Activity, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import MobileMenu from "@/app/components/MobileMenu";
 
 const navLinks = [
-  { label: "Home", href: "/" },
+  { label: "Product", href: "/" },
   { label: "Doctors", href: "/doctors" },
-  { label: "About", href: "/about" },
+  { label: "Patient", href: "/patient" },
   { label: "Contact", href: "/contact" },
   { label: "Dashboard", href: "/dashboard" },
 ];
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
-
   return (
     <header className="sticky top-0 z-50 border-b border-[#E2E0D6] bg-[#F6F5F0]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         {/* Logo */}
         <Link
           href="/"
-          onClick={closeMenu}
           className="flex items-center gap-2"
           aria-label="Doctorly home"
         >
@@ -66,7 +57,8 @@ function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
+        <MobileMenu navLinks={navLinks} />
+        {/* <button
           type="button"
           onClick={() => setMenuOpen((value) => !value)}
           className="flex h-9 w-9 items-center justify-center rounded-md text-[#0F3D3A] transition-colors hover:bg-[#EAE9E1] md:hidden"
@@ -75,11 +67,11 @@ function Navbar() {
           aria-controls="mobile-navigation"
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        </button> */}
       </div>
 
       {/* Mobile Navigation */}
-      {menuOpen && (
+      {/* {menuOpen && (
         <div
           id="mobile-navigation"
           className="border-t border-[#E2E0D6] bg-[#F6F5F0] md:hidden"
@@ -109,7 +101,7 @@ function Navbar() {
             </Link>
           </nav>
         </div>
-      )}
+      )} */}
     </header>
   );
 }
