@@ -76,12 +76,12 @@ export default function Contact() {
             Contact
           </span>
           <h1 className="font-serif-display mt-3 text-[36px] leading-[1.1] font-[560] tracking-tight text-[#0F1F1B] md:text-[42px]">
-            We're glad to hear from you
+            We&#39;re glad to hear from you
           </h1>
           <p className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-[#4B564F]">
-            Whether you're a clinic exploring Doctorly, an administrator with a
-            question about an account, or a patient with a question about your
-            record — send us a message and a real person will respond.
+            Whether you&#39;re a clinic exploring Doctorly, an administrator
+            with a question about an account, or a patient with a question about
+            your record — send us a message and a real person will respond.
           </p>
         </div>
 
@@ -242,7 +242,7 @@ export default function Contact() {
 
               <p className="mt-4 text-[12px] text-[#8A938D]">
                 By sending this message, you agree to be contacted about your
-                inquiry. We don't share your details with third parties.
+                inquiry. We don&#39;t share your details with third parties.
               </p>
             </form>
           </div>

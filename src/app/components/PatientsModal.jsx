@@ -4,33 +4,19 @@ import toast from "react-hot-toast";
 
 import AddPatientModal from "./AddPatientModal";
 
-function PatientsModal({
-  doctor,
-  onClose,
-  onAddPatient,
-  onDeletePatient,
-}) {
-  const [showAddPatient, setShowAddPatient] =
-    useState(false);
+function PatientsModal({ doctor, onClose, onAddPatient, onDeletePatient }) {
+  const [showAddPatient, setShowAddPatient] = useState(false);
 
   if (!doctor) return null;
 
   const handleDelete = (patient) => {
-    onDeletePatient(
-      doctor.id,
-      patient.id
-    );
+    onDeletePatient(doctor.id, patient.id);
 
-    toast.success(
-      `${patient.name} removed from patient list.`
-    );
+    toast.success(`${patient.name} removed from patient list.`);
   };
 
   const handlePatientCreated = (patient) => {
-    onAddPatient(
-      doctor.id,
-      patient
-    );
+    onAddPatient(doctor.id, patient);
   };
 
   const handleClose = () => {
@@ -46,14 +32,12 @@ function PatientsModal({
           <div className="flex items-center justify-between border-b border-[#E2E0D6] px-6 py-5">
             <div>
               <h2 className="font-serif-display text-[19px] font-[560] text-[#0F1F1B]">
-                {doctor.name}'s patients
+                {doctor.name}&#39;s patients
               </h2>
 
               <p className="text-[12.5px] text-[#8A938D]">
                 {doctor.patients.length}{" "}
-                {doctor.patients.length === 1
-                  ? "patient"
-                  : "patients"}
+                {doctor.patients.length === 1 ? "patient" : "patients"}
               </p>
             </div>
 
@@ -72,10 +56,7 @@ function PatientsModal({
             {doctor.patients.length === 0 ? (
               <EmptyPatients />
             ) : (
-              <PatientList
-                patients={doctor.patients}
-                onDelete={handleDelete}
-              />
+              <PatientList patients={doctor.patients} onDelete={handleDelete} />
             )}
           </div>
 
@@ -83,9 +64,7 @@ function PatientsModal({
           <div className="border-t border-[#E2E0D6] px-6 py-4">
             <button
               type="button"
-              onClick={() =>
-                setShowAddPatient(true)
-              }
+              onClick={() => setShowAddPatient(true)}
               className="flex items-center gap-2 rounded-md bg-[#0F3D3A] px-4 py-2.5 text-sm font-[500] text-[#F6F5F0] transition-colors hover:bg-[#0C332F]"
             >
               <Plus size={15} />
@@ -97,9 +76,7 @@ function PatientsModal({
 
       <AddPatientModal
         open={showAddPatient}
-        onClose={() =>
-          setShowAddPatient(false)
-        }
+        onClose={() => setShowAddPatient(false)}
         doctorName={doctor.name}
         onCreate={handlePatientCreated}
       />
@@ -107,27 +84,17 @@ function PatientsModal({
   );
 }
 
-function PatientList({
-  patients,
-  onDelete,
-}) {
+function PatientList({ patients, onDelete }) {
   return (
     <div className="flex flex-col divide-y divide-[#E2E0D6]">
       {patients.map((patient) => (
-        <PatientRow
-          key={patient.id}
-          patient={patient}
-          onDelete={onDelete}
-        />
+        <PatientRow key={patient.id} patient={patient} onDelete={onDelete} />
       ))}
     </div>
   );
 }
 
-function PatientRow({
-  patient,
-  onDelete,
-}) {
+function PatientRow({ patient, onDelete }) {
   return (
     <div className="flex items-center justify-between gap-4 py-3">
       <div className="min-w-0">

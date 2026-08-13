@@ -8,9 +8,7 @@ export default function Field({ label, error, children }) {
       {children}
 
       {error && (
-        <p className="mt-1.5 text-[12.5px] text-[#B3432D]">
-          {error.message}
-        </p>
+        <p className="mt-1.5 text-[12.5px] text-[#B3432D]">{error.message}</p>
       )}
     </div>
   );

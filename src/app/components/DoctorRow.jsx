@@ -1,16 +1,7 @@
-import {
-  Building2,
-  Mail,
-  Phone,
-  Stethoscope,
-  Users,
-} from "lucide-react";
+import { Building2, Mail, Phone, Stethoscope, Users } from "lucide-react";
 import { memo } from "react";
 
-const DoctorRow = memo(function DoctorRow({
-  doctor,
-  onViewPatients,
-}) {
+const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
   return (
     <tr className="border-b border-[#EDEBE1] last:border-0 hover:bg-[#F6F5F0]/60">
       <td className="px-5 py-3.5">
@@ -20,9 +11,7 @@ const DoctorRow = memo(function DoctorRow({
           </div>
 
           <div>
-            <div className="text-[14px] text-[#16241F]">
-              {doctor.name}
-            </div>
+            <div className="text-[14px] text-[#16241F]">{doctor.name}</div>
 
             <div className="text-[12px] text-[#8A938D]">
               {doctor.specialization}

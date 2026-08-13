@@ -1,36 +1,41 @@
-import DoctorRow from "./DoctorRow";
+import PatientRow from "./PatientRow";
 
-function DoctorTable({ doctors, onViewPatients }) {
+function PatientTable({ patients, onEdit, onDelete }) {
   return (
     <div className="overflow-hidden rounded-xl border border-[#DCE3DC] bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left">
+        <table className="w-full min-w-[760px] text-left">
           <thead>
             <tr className="border-b border-[#E2E0D6] bg-[#F6F5F0]">
+              <TableHeader>Patient</TableHeader>
+
+              <TableHeader>Condition</TableHeader>
+
               <TableHeader>Doctor</TableHeader>
-              <TableHeader>Hospital</TableHeader>
-              <TableHeader>Contact</TableHeader>
-              <TableHeader>Patients</TableHeader>
+
+              <TableHeader>Added</TableHeader>
+
               <TableHeader />
             </tr>
           </thead>
 
           <tbody>
-            {doctors.map((doctor) => (
-              <DoctorRow
-                key={doctor.id}
-                doctor={doctor}
-                onViewPatients={onViewPatients}
+            {patients.map((patient) => (
+              <PatientRow
+                key={patient.id}
+                patient={patient}
+                onEdit={onEdit}
+                onDelete={onDelete}
               />
             ))}
 
-            {doctors.length === 0 && (
+            {patients.length === 0 && (
               <tr>
                 <td
                   colSpan={5}
                   className="px-5 py-10 text-center text-[13.5px] text-[#8A938D]"
                 >
-                  No doctors match your filters.
+                  No patients match your filters.
                 </td>
               </tr>
             )}
@@ -49,4 +54,4 @@ function TableHeader({ children }) {
   );
 }
 
-export default DoctorTable;
+export default PatientTable;

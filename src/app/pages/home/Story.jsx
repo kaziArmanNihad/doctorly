@@ -16,8 +16,8 @@ function AboutStory() {
             spreadsheets, and memory. A condition noted in one visit would
             quietly disappear by the next. Doctorly started as a simple
             question: what would it take for every doctor in a clinic to see a
-            patient&#39;s full, accurate picture in seconds — and for every patient
-            to trust that picture was being kept safe?
+            patient&#39;s full, accurate picture in seconds — and for every
+            patient to trust that picture was being kept safe?
           </p>
           <p className="mt-4 text-[14.5px] leading-relaxed text-[#5C6863]">
             That question became a single, secure system where doctor records

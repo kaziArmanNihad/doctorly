@@ -27,147 +27,84 @@ function Doctors() {
 
   const [page, setPage] = useState(1);
 
-  const [showAddDoctor, setShowAddDoctor] =
-    useState(false);
+  const [showAddDoctor, setShowAddDoctor] = useState(false);
 
-  const [viewingDoctorId, setViewingDoctorId] =
-    useState(null);
+  const [viewingDoctorId, setViewingDoctorId] = useState(null);
 
-  /*
-   * Specializations
-   */
+  // Specializations
   const specializations = useMemo(() => {
-    return [
-      "all",
-      ...new Set(
-        doctors.map((doctor) => doctor.specialization)
-      ),
-    ];
+    return ["all", ...new Set(doctors.map((doctor) => doctor.specialization))];
   }, [doctors]);
 
-  /*
-   * Filter doctors
-   */
+  // Filter doctors
   const filteredDoctors = useMemo(() => {
-    const query = debouncedSearch
-      .trim()
-      .toLowerCase();
+    const query = debouncedSearch.trim().toLowerCase();
 
     return doctors.filter((doctor) => {
       const matchesSearch =
         !query ||
         doctor.name.toLowerCase().includes(query) ||
-        doctor.specialization
-          .toLowerCase()
-          .includes(query) ||
+        doctor.specialization.toLowerCase().includes(query) ||
         doctor.hospital.toLowerCase().includes(query);
 
       const matchesSpecialization =
-        specialization === "all" ||
-        doctor.specialization === specialization;
+        specialization === "all" || doctor.specialization === specialization;
 
-      const matchesFrom =
-        !dateFrom ||
-        doctor.createdAt >= dateFrom;
+      const matchesFrom = !dateFrom || doctor.createdAt >= dateFrom;
 
-      const matchesTo =
-        !dateTo ||
-        doctor.createdAt <= dateTo;
+      const matchesTo = !dateTo || doctor.createdAt <= dateTo;
 
-      return (
-        matchesSearch &&
-        matchesSpecialization &&
-        matchesFrom &&
-        matchesTo
-      );
+      return matchesSearch && matchesSpecialization && matchesFrom && matchesTo;
     });
-  }, [
-    doctors,
-    debouncedSearch,
-    specialization,
-    dateFrom,
-    dateTo,
-  ]);
+  }, [doctors, debouncedSearch, specialization, dateFrom, dateTo]);
 
-  /*
-   * Pagination
-   */
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredDoctors.length / PAGE_SIZE)
-  );
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredDoctors.length / PAGE_SIZE));
 
   const currentPage = Math.min(page, totalPages);
 
   const paginatedDoctors = useMemo(() => {
-    const start =
-      (currentPage - 1) * PAGE_SIZE;
+    const start = (currentPage - 1) * PAGE_SIZE;
 
-    return filteredDoctors.slice(
-      start,
-      start + PAGE_SIZE
-    );
+    return filteredDoctors.slice(start, start + PAGE_SIZE);
   }, [filteredDoctors, currentPage]);
 
-  /*
-   * Currently selected doctor
-   */
+  // Currently selected doctor
   const viewingDoctor = useMemo(() => {
-    return (
-      doctors.find(
-        (doctor) => doctor.id === viewingDoctorId
-      ) || null
-    );
+    return doctors.find((doctor) => doctor.id === viewingDoctorId) || null;
   }, [doctors, viewingDoctorId]);
 
-  /*
-   * Actions
-   */
+  // Actions
   const handleCreateDoctor = (doctor) => {
-    setDoctors((current) => [
-      doctor,
-      ...current,
-    ]);
-
+    setDoctors((current) => [doctor, ...current]);
     setPage(1);
   };
 
-  const handleAddPatient = (
-    doctorId,
-    patient
-  ) => {
+  const handleAddPatient = (doctorId, patient) => {
     setDoctors((current) =>
       current.map((doctor) =>
         doctor.id === doctorId
           ? {
               ...doctor,
-              patients: [
-                patient,
-                ...doctor.patients,
-              ],
+              patients: [patient, ...doctor.patients],
             }
-          : doctor
-      )
+          : doctor,
+      ),
     );
   };
 
-  const handleDeletePatient = (
-    doctorId,
-    patientId
-  ) => {
+  const handleDeletePatient = (doctorId, patientId) => {
     setDoctors((current) =>
       current.map((doctor) =>
         doctor.id === doctorId
           ? {
               ...doctor,
-              patients:
-                doctor.patients.filter(
-                  (patient) =>
-                    patient.id !== patientId
-                ),
+              patients: doctor.patients.filter(
+                (patient) => patient.id !== patientId,
+              ),
             }
-          : doctor
-      )
+          : doctor,
+      ),
     );
   };
 
@@ -200,11 +137,7 @@ function Doctors() {
       />
 
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <PageHeader
-          onAddDoctor={() =>
-            setShowAddDoctor(true)
-          }
-        />
+        <PageHeader onAddDoctor={() => setShowAddDoctor(true)} />
 
         <DoctorToolbar
           search={search}
@@ -248,21 +181,15 @@ function Doctors() {
 
       <AddDoctorModal
         open={showAddDoctor}
-        onClose={() =>
-          setShowAddDoctor(false)
-        }
+        onClose={() => setShowAddDoctor(false)}
         onCreate={handleCreateDoctor}
       />
 
       <PatientsModal
         doctor={viewingDoctor}
-        onClose={() =>
-          setViewingDoctorId(null)
-        }
+        onClose={() => setViewingDoctorId(null)}
         onAddPatient={handleAddPatient}
-        onDeletePatient={
-          handleDeletePatient
-        }
+        onDeletePatient={handleDeletePatient}
       />
     </div>
   );
@@ -277,8 +204,7 @@ function PageHeader({ onAddDoctor }) {
         </h1>
 
         <p className="mt-1 text-[14px] text-[#5C6863]">
-          Manage doctor records and their
-          patients in one place.
+          Manage doctor records and their patients in one place.
         </p>
       </div>
 

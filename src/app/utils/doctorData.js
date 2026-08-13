@@ -1,9 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import data from "./data.json"
+import data from "./data.json";
 const createDate = (daysAgo) => {
-  return new Date(Date.now() - daysAgo * 86400000)
-    .toISOString()
-    .slice(0, 10);
+  return new Date(Date.now() - daysAgo * 86400000).toISOString().slice(0, 10);
 };
 
 const doctors = data;

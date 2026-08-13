@@ -1,7 +1,4 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Pagination = ({
   currentPage,
@@ -10,15 +7,9 @@ const Pagination = ({
   pageSize,
   onPageChange,
 }) => {
-  const start =
-    totalItems === 0
-      ? 0
-      : (currentPage - 1) * pageSize + 1;
+  const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
 
-  const end = Math.min(
-    currentPage * pageSize,
-    totalItems
-  );
+  const end = Math.min(currentPage * pageSize, totalItems);
 
   return (
     <div className="flex items-center justify-between border-t border-[#E2E0D6] px-5 py-3.5">
@@ -34,22 +25,21 @@ const Pagination = ({
           <ChevronLeft size={14} />
         </PaginationButton>
 
-        {Array.from(
-          { length: totalPages },
-          (_, index) => index + 1
-        ).map((page) => (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`flex h-7 w-7 items-center justify-center rounded-md text-[12.5px] transition-colors ${
-              page === currentPage
-                ? "bg-[#0F3D3A] text-[#F6F5F0]"
-                : "text-[#5C6863] hover:bg-[#F6F5F0]"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+          (page) => (
+            <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`flex h-7 w-7 items-center justify-center rounded-md text-[12.5px] transition-colors ${
+                page === currentPage
+                  ? "bg-[#0F3D3A] text-[#F6F5F0]"
+                  : "text-[#5C6863] hover:bg-[#F6F5F0]"
+              }`}
+            >
+              {page}
+            </button>
+          ),
+        )}
 
         <PaginationButton
           disabled={currentPage === totalPages}
@@ -62,11 +52,7 @@ const Pagination = ({
   );
 };
 
-function PaginationButton({
-  children,
-  disabled,
-  onClick,
-}) {
+function PaginationButton({ children, disabled, onClick }) {
   return (
     <button
       onClick={onClick}

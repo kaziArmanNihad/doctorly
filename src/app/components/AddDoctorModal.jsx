@@ -43,9 +43,7 @@ function AddDoctorModal({ open, onClose, onCreate }) {
           <Field label="Full name" error={errors.name}>
             <input
               className={`${inputBase} ${
-                errors.name
-                  ? "border-[#B3432D]"
-                  : "border-[#DCE3DC]"
+                errors.name ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
               placeholder="Dr. Jordan Lee"
               {...register("name", {
@@ -54,15 +52,10 @@ function AddDoctorModal({ open, onClose, onCreate }) {
             />
           </Field>
 
-          <Field
-            label="Specialization"
-            error={errors.specialization}
-          >
+          <Field label="Specialization" error={errors.specialization}>
             <input
               className={`${inputBase} ${
-                errors.specialization
-                  ? "border-[#B3432D]"
-                  : "border-[#DCE3DC]"
+                errors.specialization ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
               placeholder="Cardiology"
               {...register("specialization", {
@@ -74,9 +67,7 @@ function AddDoctorModal({ open, onClose, onCreate }) {
           <Field label="Hospital" error={errors.hospital}>
             <input
               className={`${inputBase} ${
-                errors.hospital
-                  ? "border-[#B3432D]"
-                  : "border-[#DCE3DC]"
+                errors.hospital ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
               placeholder="Green Valley Hospital"
               {...register("hospital", {
@@ -89,9 +80,7 @@ function AddDoctorModal({ open, onClose, onCreate }) {
             <Field label="Phone" error={errors.phone}>
               <input
                 className={`${inputBase} ${
-                  errors.phone
-                    ? "border-[#B3432D]"
-                    : "border-[#DCE3DC]"
+                  errors.phone ? "border-[#B3432D]" : "border-[#DCE3DC]"
                 }`}
                 placeholder="+1 555 000 0000"
                 {...register("phone", {
@@ -107,9 +96,7 @@ function AddDoctorModal({ open, onClose, onCreate }) {
             <Field label="Email" error={errors.email}>
               <input
                 className={`${inputBase} ${
-                  errors.email
-                    ? "border-[#B3432D]"
-                    : "border-[#DCE3DC]"
+                  errors.email ? "border-[#B3432D]" : "border-[#DCE3DC]"
                 }`}
                 placeholder="doctor@doctorly.app"
                 {...register("email", {

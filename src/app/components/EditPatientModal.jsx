@@ -1,14 +1,15 @@
-import { Loader2, Plus, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import Field from "./Field";
-import { createPatient } from "../utils/patientData";
+import { updatePatient } from "../utils/patientData";
 
 const inputBase =
   "w-full rounded-md border bg-white px-3.5 py-2.5 text-[14px] text-[#16241F] placeholder:text-[#A6AEA8] outline-none transition-colors focus:border-[#0F3D3A] focus:ring-1 focus:ring-[#0F3D3A]";
 
-function AddPatientModal({ open, onClose, onCreate, doctors }) {
+function EditPatientModal({ patient, onClose, onSave }) {
   const {
     register,
     handleSubmit,
@@ -16,63 +17,58 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
     formState: { errors, isSubmitting },
   } = useForm({
     mode: "onBlur",
-    defaultValues: {
-      name: "",
-      age: "",
-      condition: "",
-      doctor: "",
-      phone: "",
-    },
   });
 
-  if (!open) return null;
+  /*
+   * Important:
+   * When the selected patient changes,
+   * update the form values.
+   */
+  useEffect(() => {
+    if (!patient) return;
 
-  const handleClose = () => {
-    if (isSubmitting) return;
+    reset({
+      name: patient.name,
+      age: patient.age,
+      condition: patient.condition,
+      doctor: patient.doctor,
+      phone: patient.phone,
+    });
+  }, [patient, reset]);
 
-    reset();
-    onClose();
-  };
+  if (!patient) return null;
 
   const onSubmit = async (data) => {
     try {
-      // Replace this with your API request later.
+      // Replace with API call later.
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      const patient = createPatient(data);
+      const updatedPatient = updatePatient(data);
 
-      onCreate(patient);
+      onSave(patient.id, updatedPatient);
 
-      toast.success("Patient added successfully.");
+      toast.success("Patient updated.");
 
-      reset();
       onClose();
     } catch {
-      toast.error("Failed to add patient.");
+      toast.error("Failed to update patient.");
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F1F1B]/40 px-4">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-[#0F1F1B]/40 px-4">
       <div className="w-full max-w-md rounded-xl bg-[#F6F5F0] p-6 shadow-xl">
-        {/* Header */}
         <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="font-serif-display text-[20px] font-[560] text-[#0F1F1B]">
-              Add patient
-            </h2>
-
-            <p className="mt-1 text-[13px] text-[#8A938D]">
-              Add a new patient to the system.
-            </p>
-          </div>
+          <h2 className="font-serif-display text-[20px] font-[560] text-[#0F1F1B]">
+            Edit patient
+          </h2>
 
           <button
             type="button"
-            onClick={handleClose}
+            onClick={onClose}
             disabled={isSubmitting}
             className="text-[#8A938D] transition-colors hover:text-[#0F3D3A] disabled:opacity-50"
-            aria-label="Close add patient modal"
+            aria-label="Close edit patient modal"
           >
             <X size={18} />
           </button>
@@ -83,12 +79,10 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
           noValidate
           className="flex flex-col gap-4"
         >
-          {/* Name */}
           <Field label="Full name" error={errors.name}>
             <input
               autoFocus
               type="text"
-              placeholder="Riley Morgan"
               className={`${inputBase} ${
                 errors.name ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
@@ -102,14 +96,12 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
             />
           </Field>
 
-          {/* Age + Condition */}
           <div className="grid grid-cols-2 gap-4">
             <Field label="Age" error={errors.age}>
               <input
                 type="number"
                 min="0"
                 max="120"
-                placeholder="34"
                 className={`${inputBase} ${
                   errors.age ? "border-[#B3432D]" : "border-[#DCE3DC]"
                 }`}
@@ -131,7 +123,6 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
             <Field label="Condition" error={errors.condition}>
               <input
                 type="text"
-                placeholder="Hypertension"
                 className={`${inputBase} ${
                   errors.condition ? "border-[#B3432D]" : "border-[#DCE3DC]"
                 }`}
@@ -142,33 +133,21 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
             </Field>
           </div>
 
-          {/* Doctor */}
           <Field label="Assigned doctor" error={errors.doctor}>
-            <select
+            <input
+              type="text"
               className={`${inputBase} ${
                 errors.doctor ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
               {...register("doctor", {
-                required: "Select the assigned doctor.",
+                required: "Enter the assigned doctor.",
               })}
-            >
-              <option value="">Select a doctor</option>
-
-              {doctors
-                .filter((doctor) => doctor !== "all")
-                .map((doctor) => (
-                  <option key={doctor} value={doctor}>
-                    {doctor}
-                  </option>
-                ))}
-            </select>
+            />
           </Field>
 
-          {/* Phone */}
           <Field label="Phone" error={errors.phone}>
             <input
               type="tel"
-              placeholder="+1 415 555 0100"
               className={`${inputBase} ${
                 errors.phone ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
@@ -182,19 +161,14 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
             />
           </Field>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
             className="mt-2 flex items-center justify-center gap-2 rounded-md bg-[#0F3D3A] px-5 py-2.5 text-sm font-[500] text-[#F6F5F0] transition-colors hover:bg-[#0C332F] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {isSubmitting ? (
-              <Loader2 size={15} className="animate-spin" />
-            ) : (
-              <Plus size={15} />
-            )}
+            {isSubmitting && <Loader2 size={15} className="animate-spin" />}
 
-            {isSubmitting ? "Adding..." : "Add patient"}
+            {isSubmitting ? "Saving..." : "Save changes"}
           </button>
         </form>
       </div>
@@ -202,4 +176,4 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
   );
 }
 
-export default AddPatientModal;
+export default EditPatientModal;

@@ -13,10 +13,10 @@ export default function DoctorlyHome() {
       <PulseDivider className="mt-16" />
       <Feature />
       <PulseDivider className="mt-16" />
-       <About />
-      <PulseDivider className="mt-16"/>
+      <About />
+      <PulseDivider className="mt-16" />
       <Story />
-      <PulseDivider className="mt-16"/>
+      <PulseDivider className="mt-16" />
       <Valus />
       <PulseDivider className="mt-16" />
       <CTA />
