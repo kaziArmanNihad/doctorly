@@ -43,13 +43,13 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
 
       <td className="px-5 py-3.5">
         <span className="font-mono text-[13px] text-[#0F3D3A]">
-          {doctor.patientCount}
+          {doctor.patients?.length ?? 0}
         </span>
       </td>
 
       <td className="px-5 py-3.5 text-right">
         <button
-          onClick={() => onViewPatients(doctor.id)}
+          onClick={() => onViewPatients(doctor._id)}
           className="inline-flex items-center gap-1.5 rounded-md border border-[#DCE3DC] px-3 py-1.5 text-[12.5px] font-[500] text-[#0F3D3A] transition-colors hover:bg-[#0F3D3A] hover:text-[#F6F5F0]"
         >
           <Users size={13} />

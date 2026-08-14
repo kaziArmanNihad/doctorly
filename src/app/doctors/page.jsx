@@ -11,6 +11,7 @@ import Pagination from "../components/Pagination";
 import PatientsModal from "../components/PatientsModal";
 
 import { useDebounce } from "../hooks/useDebounce";
+
 import {
   useDoctors,
   useCreateDoctor,
@@ -22,7 +23,10 @@ import {
 const PAGE_SIZE = 6;
 
 export default function Doctors() {
-  //  Filters
+  // --------------------------------------------------
+  // Filters
+  // --------------------------------------------------
+
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 400);
 
@@ -32,58 +36,130 @@ export default function Doctors() {
 
   const [page, setPage] = useState(1);
 
-  //  Modals
+  // --------------------------------------------------
+  // Modals
+  // --------------------------------------------------
+
   const [showAddDoctor, setShowAddDoctor] = useState(false);
   const [viewingDoctorId, setViewingDoctorId] = useState(null);
 
-  //  Get doctors
-  const { data, isLoading, isError, error } = useDoctors({
+  // --------------------------------------------------
+  // Doctors
+  // --------------------------------------------------
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+  } = useDoctors({
     search: debouncedSearch,
-    specialization: specialization === "all" ? "" : specialization,
+    specialization:
+      specialization === "all" ? "" : specialization,
     dateFrom,
     dateTo,
     page,
     limit: PAGE_SIZE,
   });
 
-  const doctors = useMemo(() => data?.data ?? [], [data?.data]);
+  const doctors = useMemo(
+    () => data?.data ?? [],
+    [data?.data]
+  );
+
   const totalItems = data?.meta?.total ?? 0;
   const totalPages = data?.meta?.totalPages ?? 1;
 
-  //  Create doctor
+  // --------------------------------------------------
+  // Create Doctor
+  // --------------------------------------------------
+
   const createDoctor = useCreateDoctor();
 
   const handleCreateDoctor = async (doctorData) => {
-    await createDoctor.mutateAsync(doctorData);
+    try {
+      await createDoctor.mutateAsync(doctorData);
 
-    setShowAddDoctor(false);
-    setPage(1);
+      setShowAddDoctor(false);
+      setPage(1);
+    } catch (error) {
+      console.error("Failed to create doctor:", error);
+    }
   };
 
-  //  Selected doctor
+  // --------------------------------------------------
+  // Selected Doctor
+  // --------------------------------------------------
+
   const viewingDoctor = useMemo(() => {
-    return doctors.find((doctor) => doctor._id === viewingDoctorId);
+    if (!viewingDoctorId) return null;
+
+    return doctors.find(
+      (doctor) => doctor._id === viewingDoctorId
+    );
   }, [doctors, viewingDoctorId]);
 
-  //  Get doctor patients
-  const { data: patientsData, isLoading: patientsLoading } =
-    useDoctorPatients(viewingDoctorId);
+  // --------------------------------------------------
+  // Get Patients For Selected Doctor
+  // --------------------------------------------------
 
-  //  Add patient
+  const {
+    data: patientsData,
+    isLoading: patientsLoading,
+    isError: patientsError,
+  } = useDoctorPatients(viewingDoctorId);
+
+  /*
+    API response:
+
+    {
+      success: true,
+      data: [...patients],
+      meta: {...}
+    }
+
+    Therefore the patients are:
+
+    patientsData.data
+  */
+
+  const patients = patientsData?.data ?? [];
+
+  // --------------------------------------------------
+  // Add Patient
+  // --------------------------------------------------
+
   const addPatient = useAddPatientToDoctor(viewingDoctorId);
 
   const handleAddPatient = async (patientData) => {
-    await addPatient.mutateAsync(patientData);
+    try {
+      await addPatient.mutateAsync(patientData);
+    } catch (error) {
+      console.error("Failed to add patient:", error);
+      throw error;
+    }
   };
 
-  //  Delete patient
-  const deletePatient = useDeletePatientFromDoctor(viewingDoctorId);
+  // --------------------------------------------------
+  // Delete Patient
+  // --------------------------------------------------
+
+  const deletePatient =
+    useDeletePatientFromDoctor(viewingDoctorId);
 
   const handleDeletePatient = async (patientId) => {
-    await deletePatient.mutateAsync(patientId);
+    try {
+      await deletePatient.mutateAsync(patientId);
+    } catch (error) {
+      console.error("Failed to delete patient:", error);
+      throw error;
+    }
   };
 
-  //  Reset filters
+  // --------------------------------------------------
+  // Reset Filters
+  // --------------------------------------------------
+
   const handleResetFilters = () => {
     setSearch("");
     setSpecialization("all");
@@ -98,26 +174,39 @@ export default function Doctors() {
     Boolean(dateFrom) ||
     Boolean(dateTo);
 
-  //  Specializations
+  // --------------------------------------------------
+  // Specializations
+  // --------------------------------------------------
+
   const specializations = useMemo(() => {
     return [
       "all",
       ...new Set(
-        doctors.map((doctor) => doctor.specialization).filter(Boolean),
+        doctors
+          .map((doctor) => doctor.specialization)
+          .filter(Boolean)
       ),
     ];
   }, [doctors]);
 
-  //  Loading
+  // --------------------------------------------------
+  // Loading
+  // --------------------------------------------------
+
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-sm text-[#5C6863]">Loading doctors...</p>
+        <p className="text-sm text-[#5C6863]">
+          Loading doctors...
+        </p>
       </div>
     );
   }
 
-  //  Error
+  // --------------------------------------------------
+  // Error
+  // --------------------------------------------------
+
   if (isError) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -136,7 +225,7 @@ export default function Doctors() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F6F5F0] font-sans text-[#16241F] antialiased">
+    <div className="min-h-screen w-full bg-[#F6F5F0] font-sans text-[#16241F] antialiased">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -150,8 +239,11 @@ export default function Doctors() {
       />
 
       <main className="mx-auto max-w-6xl px-6 py-10">
+
         {/* Header */}
-        <PageHeader onAddDoctor={() => setShowAddDoctor(true)} />
+        <PageHeader
+          onAddDoctor={() => setShowAddDoctor(true)}
+        />
 
         {/* Filters */}
         <DoctorToolbar
@@ -161,27 +253,37 @@ export default function Doctors() {
           dateFrom={dateFrom}
           dateTo={dateTo}
           hasFilters={hasFilters}
+
           onSearchChange={(value) => {
             setSearch(value);
             setPage(1);
           }}
+
           onSpecializationChange={(value) => {
             setSpecialization(value);
             setPage(1);
           }}
+
           onDateFromChange={(value) => {
             setDateFrom(value);
             setPage(1);
           }}
+
           onDateToChange={(value) => {
             setDateTo(value);
             setPage(1);
           }}
+
           onReset={handleResetFilters}
         />
 
         {/* Doctors */}
-        <DoctorTable doctors={doctors} onViewPatients={setViewingDoctorId} />
+        <DoctorTable
+          doctors={doctors}
+          onViewPatients={(doctorId) =>
+            setViewingDoctorId(doctorId)
+          }
+        />
 
         {/* Pagination */}
         <Pagination
@@ -201,26 +303,26 @@ export default function Doctors() {
         loading={createDoctor.isPending}
       />
 
-      {/* Patients */}
+      {/* Patients Modal */}
       <PatientsModal
-        doctor={
-          viewingDoctor
-            ? {
-                ...viewingDoctor,
-                patients: patientsData?.patients ?? [],
-              }
-            : null
-        }
+        doctor={viewingDoctor}
+        patients={patients}
         loading={patientsLoading}
+        error={patientsError}
         onClose={() => setViewingDoctorId(null)}
         onAddPatient={handleAddPatient}
         onDeletePatient={handleDeletePatient}
+        addingPatient={addPatient.isPending}
+        deletingPatient={deletePatient.isPending}
       />
     </div>
   );
 }
 
-//  Page Header
+// --------------------------------------------------
+// Page Header
+// --------------------------------------------------
+
 function PageHeader({ onAddDoctor }) {
   return (
     <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
