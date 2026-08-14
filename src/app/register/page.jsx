@@ -15,6 +15,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import auth from "../firebase/firebase.config";
+import api from "../lib/api";
+import { redirect } from "next/navigation";
 
 const PulseBackdrop = () => (
   <svg
@@ -53,24 +57,47 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: "onBlur",
   });
 
-  const password = watch("password");
-
   const onSubmit = async (data) => {
     try {
-      // Replace this with your real signup API call.
-      // await api.post("/auth/register", data);
+      // firebase - creating user
+      const user = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
 
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      // Updating display name
+      await updateProfile(userCredential.user, {
+        displayName: data.name,
+      });
 
+      if (!user) {
+        throw new Error("Firebase user was not created.");
+      }
+
+      // sending data in the db
+      await api.post("/user", {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        isActive: true,
+        role: "admin",
+      });
+
+      // clearing form
+      reset();
+      redirect("/");
       toast.success("Account created — welcome to Doctorly.");
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
+      console.log("error while register: ", err);
     }
   };
 
@@ -79,8 +106,7 @@ export default function Register() {
       icon: "🔒",
     });
 
-    // Hook up your real OAuth flow here.
-    // window.location.href = "/api/auth/google";
+    // google stuff
   };
 
   const inputBase =
@@ -281,7 +307,8 @@ export default function Register() {
                       {...register("confirmPassword", {
                         required: "Confirm your password.",
                         validate: (value) =>
-                          value === password || "Passwords don't match.",
+                          value === getValues("password") ||
+                          "Passwords don't match.",
                       })}
                     />
 

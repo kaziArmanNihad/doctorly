@@ -1,14 +1,28 @@
 "use client";
 
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, LogOut, Menu, X } from "lucide-react";
+import { signOut } from "firebase/auth";
 import Link from "next/link";
 import { useState } from "react";
+import auth from "../firebase/firebase.config";
+import { useAuth } from "@/app/providers/AuthProvider";
 
-export default function MobileMenu({ navLinks }) {
+function MobileMenu({ navLinks }) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { user, loading } = useAuth();
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      closeMenu();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -29,7 +43,7 @@ export default function MobileMenu({ navLinks }) {
       {menuOpen && (
         <div
           id="mobile-navigation"
-          className="absolute left-0 right-0 top-16 border-t border-[#E2E0D6] bg-[#F6F5F0] shadow-sm"
+          className="absolute top-16 right-0 left-0 border-t border-[#E2E0D6] bg-[#F6F5F0] shadow-sm"
         >
           <nav
             className="mx-auto flex max-w-6xl flex-col px-6 py-5"
@@ -46,17 +60,31 @@ export default function MobileMenu({ navLinks }) {
               </Link>
             ))}
 
-            <Link
-              href="/login"
-              onClick={closeMenu}
-              className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-md bg-[#0F3D3A] px-4 py-2.5 text-sm font-medium text-[#F6F5F0] transition-all hover:bg-[#0C332F] active:scale-[0.98]"
-            >
-              Sign In
-              <ArrowRight size={14} />
-            </Link>
+            {!loading &&
+              (user?.email ? (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-md bg-[#0F3D3A] px-4 py-2.5 text-sm font-medium text-[#F6F5F0] transition-all hover:bg-[#0C332F] active:scale-[0.98]"
+                >
+                  Logout
+                  <LogOut size={14} />
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={closeMenu}
+                  className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-md bg-[#0F3D3A] px-4 py-2.5 text-sm font-medium text-[#F6F5F0] transition-all hover:bg-[#0C332F] active:scale-[0.98]"
+                >
+                  Sign In
+                  <ArrowRight size={14} />
+                </Link>
+              ))}
           </nav>
         </div>
       )}
     </div>
   );
 }
+
+export default MobileMenu;

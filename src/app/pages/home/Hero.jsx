@@ -38,7 +38,7 @@ function Hero() {
                 <ArrowRight size={15} />
               </button>
             </Link>
-            <Link href="/about">
+            <Link href="/contact">
               <button className="text-sm font-[500] text-[#0F3D3A] underline decoration-[#0F3D3A]/25 underline-offset-4 hover:decoration-[#0F3D3A]">
                 See how it works
               </button>
