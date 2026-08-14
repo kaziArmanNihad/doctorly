@@ -15,10 +15,10 @@ function CTA() {
           </p>
         </div>
         <Link href="/login">
-        <button className="flex shrink-0 items-center gap-2 rounded-md bg-[#E0A94A] px-5 py-3 text-sm font-[500] text-[#3A2A08] transition-colors hover:bg-[#D49B36]">
-          Go to login
-          <ArrowRight size={15} />
-        </button>
+          <button className="flex shrink-0 items-center gap-2 rounded-md bg-[#E0A94A] px-5 py-3 text-sm font-[500] text-[#3A2A08] transition-colors hover:bg-[#D49B36]">
+            Go to login
+            <ArrowRight size={15} />
+          </button>
         </Link>
       </div>
     </section>

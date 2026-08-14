@@ -14,8 +14,8 @@ function AuthButton() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      toast.error("Logout Successfully!")
-      redirect("/")
+      toast.error("Logout Successfully!");
+      redirect("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }

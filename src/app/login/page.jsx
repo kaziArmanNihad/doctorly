@@ -14,6 +14,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import auth from "../firebase/firebase.config";
 
 const PulseBackdrop = () => (
   <svg
@@ -47,10 +50,11 @@ const Field = ({ label, error, children }) => (
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     mode: "onBlur",
@@ -58,14 +62,25 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     try {
-      // Replace with your real auth call:
-      // await api.post("/auth/login", data);
+      const result = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
 
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      if (!result) {
+        console.log("something went wrong while signin firebase:", err);
+        toast.error("Signed in failed!");
+      }
 
+      // clearing form
+      reset();
+      router.push("/");
       toast.success("Signed in successfully.");
-    } catch (err) {
-      toast.error("Incorrect email or password.");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.success("Incorrect email or password.");
+      reset();
     }
   };
 
@@ -73,9 +88,6 @@ export default function Login() {
     toast("Connecting to Google...", {
       icon: "🔒",
     });
-
-    // Hook up your real OAuth flow here:
-    // window.location.href = "/api/auth/google";
   };
 
   const inputBase =
