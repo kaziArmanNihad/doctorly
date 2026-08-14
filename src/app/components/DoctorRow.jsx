@@ -43,7 +43,7 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
 
       <td className="px-5 py-3.5">
         <span className="font-mono text-[13px] text-[#0F3D3A]">
-          {doctor.patients.length}
+          {doctor.patientCount}
         </span>
       </td>
 

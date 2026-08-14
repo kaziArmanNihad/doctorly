@@ -10,14 +10,19 @@ import DoctorToolbar from "../components/DoctorToolbar";
 import Pagination from "../components/Pagination";
 import PatientsModal from "../components/PatientsModal";
 
-import { seedDoctors } from "../utils/doctorData";
 import { useDebounce } from "../hooks/useDebounce";
+import {
+  useDoctors,
+  useCreateDoctor,
+  useDoctorPatients,
+  useAddPatientToDoctor,
+  useDeletePatientFromDoctor,
+} from "../hooks/useDoctors";
 
 const PAGE_SIZE = 6;
 
-function Doctors() {
-  const [doctors, setDoctors] = useState(seedDoctors);
-
+export default function Doctors() {
+  //  Filters
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 400);
 
@@ -27,87 +32,58 @@ function Doctors() {
 
   const [page, setPage] = useState(1);
 
+  //  Modals
   const [showAddDoctor, setShowAddDoctor] = useState(false);
-
   const [viewingDoctorId, setViewingDoctorId] = useState(null);
 
-  // Specializations
-  const specializations = useMemo(() => {
-    return ["all", ...new Set(doctors.map((doctor) => doctor.specialization))];
-  }, [doctors]);
+  //  Get doctors
+  const { data, isLoading, isError, error } = useDoctors({
+    search: debouncedSearch,
+    specialization: specialization === "all" ? "" : specialization,
+    dateFrom,
+    dateTo,
+    page,
+    limit: PAGE_SIZE,
+  });
 
-  // Filter doctors
-  const filteredDoctors = useMemo(() => {
-    const query = debouncedSearch.trim().toLowerCase();
+  const doctors = useMemo(() => data?.data ?? [], [data?.data]);
+  const totalItems = data?.meta?.total ?? 0;
+  const totalPages = data?.meta?.totalPages ?? 1;
 
-    return doctors.filter((doctor) => {
-      const matchesSearch =
-        !query ||
-        doctor.name.toLowerCase().includes(query) ||
-        doctor.specialization.toLowerCase().includes(query) ||
-        doctor.hospital.toLowerCase().includes(query);
+  //  Create doctor
+  const createDoctor = useCreateDoctor();
 
-      const matchesSpecialization =
-        specialization === "all" || doctor.specialization === specialization;
+  const handleCreateDoctor = async (doctorData) => {
+    await createDoctor.mutateAsync(doctorData);
 
-      const matchesFrom = !dateFrom || doctor.createdAt >= dateFrom;
-
-      const matchesTo = !dateTo || doctor.createdAt <= dateTo;
-
-      return matchesSearch && matchesSpecialization && matchesFrom && matchesTo;
-    });
-  }, [doctors, debouncedSearch, specialization, dateFrom, dateTo]);
-
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(filteredDoctors.length / PAGE_SIZE));
-
-  const currentPage = Math.min(page, totalPages);
-
-  const paginatedDoctors = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-
-    return filteredDoctors.slice(start, start + PAGE_SIZE);
-  }, [filteredDoctors, currentPage]);
-
-  // Currently selected doctor
-  const viewingDoctor = useMemo(() => {
-    return doctors.find((doctor) => doctor.id === viewingDoctorId) || null;
-  }, [doctors, viewingDoctorId]);
-
-  // Actions
-  const handleCreateDoctor = (doctor) => {
-    setDoctors((current) => [doctor, ...current]);
+    setShowAddDoctor(false);
     setPage(1);
   };
 
-  const handleAddPatient = (doctorId, patient) => {
-    setDoctors((current) =>
-      current.map((doctor) =>
-        doctor.id === doctorId
-          ? {
-              ...doctor,
-              patients: [patient, ...doctor.patients],
-            }
-          : doctor,
-      ),
-    );
+  //  Selected doctor
+  const viewingDoctor = useMemo(() => {
+    return doctors.find((doctor) => doctor._id === viewingDoctorId);
+  }, [doctors, viewingDoctorId]);
+
+  //  Get doctor patients
+  const { data: patientsData, isLoading: patientsLoading } =
+    useDoctorPatients(viewingDoctorId);
+
+  //  Add patient
+  const addPatient = useAddPatientToDoctor(viewingDoctorId);
+
+  const handleAddPatient = async (patientData) => {
+    await addPatient.mutateAsync(patientData);
   };
 
-  const handleDeletePatient = (doctorId, patientId) => {
-    setDoctors((current) =>
-      current.map((doctor) =>
-        doctor.id === doctorId
-          ? {
-              ...doctor,
-              patients: doctor.patients.filter(
-                (patient) => patient.id !== patientId,
-              ),
-            }
-          : doctor,
-      ),
-    );
+  //  Delete patient
+  const deletePatient = useDeletePatientFromDoctor(viewingDoctorId);
+
+  const handleDeletePatient = async (patientId) => {
+    await deletePatient.mutateAsync(patientId);
   };
 
+  //  Reset filters
   const handleResetFilters = () => {
     setSearch("");
     setSpecialization("all");
@@ -122,8 +98,45 @@ function Doctors() {
     Boolean(dateFrom) ||
     Boolean(dateTo);
 
+  //  Specializations
+  const specializations = useMemo(() => {
+    return [
+      "all",
+      ...new Set(
+        doctors.map((doctor) => doctor.specialization).filter(Boolean),
+      ),
+    ];
+  }, [doctors]);
+
+  //  Loading
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <p className="text-sm text-[#5C6863]">Loading doctors...</p>
+      </div>
+    );
+  }
+
+  //  Error
+  if (isError) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="text-center">
+          <h2 className="font-serif-display text-xl font-medium text-[#0F1F1B]">
+            Failed to load doctors
+          </h2>
+
+          <p className="mt-2 text-sm text-[#5C6863]">
+            {error?.response?.data?.message ||
+              "Something went wrong while loading doctors."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full bg-[#F6F5F0] font-sans text-[#16241F] antialiased">
+    <div className="w-full min-h-screen bg-[#F6F5F0] font-sans text-[#16241F] antialiased">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -137,8 +150,10 @@ function Doctors() {
       />
 
       <main className="mx-auto max-w-6xl px-6 py-10">
+        {/* Header */}
         <PageHeader onAddDoctor={() => setShowAddDoctor(true)} />
 
+        {/* Filters */}
         <DoctorToolbar
           search={search}
           specialization={specialization}
@@ -165,28 +180,38 @@ function Doctors() {
           onReset={handleResetFilters}
         />
 
-        <DoctorTable
-          doctors={paginatedDoctors}
-          onViewPatients={setViewingDoctorId}
-        />
+        {/* Doctors */}
+        <DoctorTable doctors={doctors} onViewPatients={setViewingDoctorId} />
 
+        {/* Pagination */}
         <Pagination
-          currentPage={currentPage}
+          currentPage={page}
           totalPages={totalPages}
-          totalItems={filteredDoctors.length}
+          totalItems={totalItems}
           pageSize={PAGE_SIZE}
           onPageChange={setPage}
         />
       </main>
 
+      {/* Add Doctor */}
       <AddDoctorModal
         open={showAddDoctor}
         onClose={() => setShowAddDoctor(false)}
         onCreate={handleCreateDoctor}
+        loading={createDoctor.isPending}
       />
 
+      {/* Patients */}
       <PatientsModal
-        doctor={viewingDoctor}
+        doctor={
+          viewingDoctor
+            ? {
+                ...viewingDoctor,
+                patients: patientsData?.patients ?? [],
+              }
+            : null
+        }
+        loading={patientsLoading}
         onClose={() => setViewingDoctorId(null)}
         onAddPatient={handleAddPatient}
         onDeletePatient={handleDeletePatient}
@@ -195,6 +220,7 @@ function Doctors() {
   );
 }
 
+//  Page Header
 function PageHeader({ onAddDoctor }) {
   return (
     <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -209,6 +235,7 @@ function PageHeader({ onAddDoctor }) {
       </div>
 
       <button
+        type="button"
         onClick={onAddDoctor}
         className="flex shrink-0 items-center justify-center gap-2 rounded-md bg-[#0F3D3A] px-4 py-2.5 text-sm font-[500] text-[#F6F5F0] transition-colors hover:bg-[#0C332F]"
       >
@@ -218,5 +245,3 @@ function PageHeader({ onAddDoctor }) {
     </div>
   );
 }
-
-export default Doctors;
