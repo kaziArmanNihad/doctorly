@@ -4,19 +4,43 @@ import toast from "react-hot-toast";
 
 import AddPatientModal from "./AddPatientModal";
 
-function PatientsModal({ doctor, onClose, onAddPatient, onDeletePatient }) {
+function PatientsModal({
+  doctor,
+  patients = [],
+  doctors = [],
+  loading = false,
+  onClose,
+  onAddPatient,
+  onDeletePatient,
+}) {
   const [showAddPatient, setShowAddPatient] = useState(false);
 
   if (!doctor) return null;
 
-  const handleDelete = (patient) => {
-    onDeletePatient(doctor.id, patient.id);
+  // Use patients prop if available.
+  // Otherwise use patients from the selected doctor.
+  const doctorPatients = doctor.patients || [];
 
-    toast.success(`${patient.name} removed from patient list.`);
+  const patientList = patients.length > 0 ? patients : doctorPatients;
+
+  const handleDelete = async (patient) => {
+    try {
+      await onDeletePatient(patient._id);
+
+      toast.success(`${patient.name} removed from patient list.`);
+    } catch (error) {
+      toast.error("Failed to remove patient.");
+      console.error(error);
+    }
   };
 
-  const handlePatientCreated = (patient) => {
-    onAddPatient(doctor.id, patient);
+  const handlePatientCreated = async (patient) => {
+    try {
+      await onAddPatient(patient);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add patient.");
+    }
   };
 
   const handleClose = () => {
@@ -32,12 +56,12 @@ function PatientsModal({ doctor, onClose, onAddPatient, onDeletePatient }) {
           <div className="flex items-center justify-between border-b border-[#E2E0D6] px-6 py-5">
             <div>
               <h2 className="font-serif-display text-[19px] font-[560] text-[#0F1F1B]">
-                {doctor.name}&#39;s patients
+                {doctor.name}&apos;s patients
               </h2>
 
               <p className="text-[12.5px] text-[#8A938D]">
-                {doctor.patients.length}{" "}
-                {doctor.patients.length === 1 ? "patient" : "patients"}
+                {patientList.length}{" "}
+                {patientList.length === 1 ? "patient" : "patients"}
               </p>
             </div>
 
@@ -53,10 +77,14 @@ function PatientsModal({ doctor, onClose, onAddPatient, onDeletePatient }) {
 
           {/* Patient List */}
           <div className="max-h-[50vh] overflow-y-auto px-6 py-4">
-            {doctor.patients.length === 0 ? (
+            {loading ? (
+              <p className="py-8 text-center text-sm text-[#8A938D]">
+                Loading patients...
+              </p>
+            ) : patientList.length === 0 ? (
               <EmptyPatients />
             ) : (
-              <PatientList patients={doctor.patients} onDelete={handleDelete} />
+              <PatientList patients={patientList} onDelete={handleDelete} />
             )}
           </div>
 
@@ -77,8 +105,10 @@ function PatientsModal({ doctor, onClose, onAddPatient, onDeletePatient }) {
       <AddPatientModal
         open={showAddPatient}
         onClose={() => setShowAddPatient(false)}
-        doctorName={doctor.name}
         onCreate={handlePatientCreated}
+        doctors={doctors}
+        selectedDoctorId={doctor._id}
+        selectedDoctorName={doctor.name}
       />
     </>
   );
@@ -87,8 +117,8 @@ function PatientsModal({ doctor, onClose, onAddPatient, onDeletePatient }) {
 function PatientList({ patients, onDelete }) {
   return (
     <div className="flex flex-col divide-y divide-[#E2E0D6]">
-      {patients.map((patient, index) => (
-        <PatientRow key={index} patient={patient} onDelete={onDelete} />
+      {patients.map((patient) => (
+        <PatientRow key={patient._id} patient={patient} onDelete={onDelete} />
       ))}
     </div>
   );
@@ -107,7 +137,10 @@ function PatientRow({ patient, onDelete }) {
           {" · "}
           {patient.condition}
           {" · "}
-          Added {patient.createdAt}
+          Added{" "}
+          {patient.createdAt
+            ? new Date(patient.createdAt).toLocaleDateString()
+            : "—"}
         </div>
       </div>
 

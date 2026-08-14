@@ -3,12 +3,18 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 import Field from "./Field";
-import { createPatient } from "../utils/patientData";
 
 const inputBase =
   "w-full rounded-md border bg-white px-3.5 py-2.5 text-[14px] text-[#16241F] placeholder:text-[#A6AEA8] outline-none transition-colors focus:border-[#0F3D3A] focus:ring-1 focus:ring-[#0F3D3A]";
 
-function AddPatientModal({ open, onClose, onCreate, doctors }) {
+function AddPatientModal({
+  open,
+  onClose,
+  onCreate,
+  doctors = [],
+  selectedDoctorId = "",
+  selectedDoctorName = "",
+}) {
   const {
     register,
     handleSubmit,
@@ -36,12 +42,10 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
 
   const onSubmit = async (data) => {
     try {
-      // Replace this with your API request later.
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const patient = createPatient(data);
-
-      onCreate(patient);
+      await onCreate({
+        ...data,
+        doctor: selectedDoctorId,
+      });
 
       toast.success("Patient added successfully.");
 
@@ -154,13 +158,11 @@ function AddPatientModal({ open, onClose, onCreate, doctors }) {
             >
               <option value="">Select a doctor</option>
 
-              {doctors
-                .filter((doctor) => doctor !== "all")
-                .map((doctor) => (
-                  <option key={doctor} value={doctor}>
-                    {doctor}
-                  </option>
-                ))}
+              {doctors.map((doctor) => (
+                <option key={doctor._id} value={doctor._id}>
+                  {doctor.name}
+                </option>
+              ))}
             </select>
           </Field>
 

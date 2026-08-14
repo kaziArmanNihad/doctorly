@@ -18,6 +18,7 @@ import {
   useDoctorPatients,
   useAddPatientToDoctor,
   useDeletePatientFromDoctor,
+  useDoctor,
 } from "../hooks/useDoctors";
 
 const PAGE_SIZE = 6;
@@ -47,25 +48,16 @@ export default function Doctors() {
   // Doctors
   // --------------------------------------------------
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useDoctors({
+  const { data, isLoading, isError, error } = useDoctors({
     search: debouncedSearch,
-    specialization:
-      specialization === "all" ? "" : specialization,
+    specialization: specialization === "all" ? "" : specialization,
     dateFrom,
     dateTo,
     page,
     limit: PAGE_SIZE,
   });
 
-  const doctors = useMemo(
-    () => data?.data ?? [],
-    [data?.data]
-  );
+  const doctors = useMemo(() => data?.data ?? [], [data?.data]);
 
   const totalItems = data?.meta?.total ?? 0;
   const totalPages = data?.meta?.totalPages ?? 1;
@@ -94,9 +86,7 @@ export default function Doctors() {
   const viewingDoctor = useMemo(() => {
     if (!viewingDoctorId) return null;
 
-    return doctors.find(
-      (doctor) => doctor._id === viewingDoctorId
-    );
+    return doctors.find((doctor) => doctor._id === viewingDoctorId);
   }, [doctors, viewingDoctorId]);
 
   // --------------------------------------------------
@@ -108,20 +98,6 @@ export default function Doctors() {
     isLoading: patientsLoading,
     isError: patientsError,
   } = useDoctorPatients(viewingDoctorId);
-
-  /*
-    API response:
-
-    {
-      success: true,
-      data: [...patients],
-      meta: {...}
-    }
-
-    Therefore the patients are:
-
-    patientsData.data
-  */
 
   const patients = patientsData?.data ?? [];
 
@@ -144,8 +120,7 @@ export default function Doctors() {
   // Delete Patient
   // --------------------------------------------------
 
-  const deletePatient =
-    useDeletePatientFromDoctor(viewingDoctorId);
+  const deletePatient = useDeletePatientFromDoctor(viewingDoctorId);
 
   const handleDeletePatient = async (patientId) => {
     try {
@@ -182,9 +157,7 @@ export default function Doctors() {
     return [
       "all",
       ...new Set(
-        doctors
-          .map((doctor) => doctor.specialization)
-          .filter(Boolean)
+        doctors.map((doctor) => doctor.specialization).filter(Boolean),
       ),
     ];
   }, [doctors]);
@@ -196,9 +169,7 @@ export default function Doctors() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-sm text-[#5C6863]">
-          Loading doctors...
-        </p>
+        <p className="text-sm text-[#5C6863]">Loading doctors...</p>
       </div>
     );
   }
@@ -239,11 +210,8 @@ export default function Doctors() {
       />
 
       <main className="mx-auto max-w-6xl px-6 py-10">
-
         {/* Header */}
-        <PageHeader
-          onAddDoctor={() => setShowAddDoctor(true)}
-        />
+        <PageHeader onAddDoctor={() => setShowAddDoctor(true)} />
 
         {/* Filters */}
         <DoctorToolbar
@@ -280,9 +248,7 @@ export default function Doctors() {
         {/* Doctors */}
         <DoctorTable
           doctors={doctors}
-          onViewPatients={(doctorId) =>
-            setViewingDoctorId(doctorId)
-          }
+          onViewPatients={(doctorId) => setViewingDoctorId(doctorId)}
         />
 
         {/* Pagination */}
@@ -307,6 +273,7 @@ export default function Doctors() {
       <PatientsModal
         doctor={viewingDoctor}
         patients={patients}
+        doctors={doctors}
         loading={patientsLoading}
         error={patientsError}
         onClose={() => setViewingDoctorId(null)}

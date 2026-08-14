@@ -15,9 +15,10 @@ export function useDoctors(params = {}) {
     queryKey: doctorKeys.list(params),
     queryFn: async () => {
       const { data } = await api.get("/doctors", { params });
-      return data; // expect { doctors, total, page, totalPages }
+      return data;
     },
-    placeholderData: (previousData) => previousData, // smooth pagination, no flash of empty state
+    placeholderData: (previousData) => previousData,
+    // smooth pagination, no flash of empty state
   });
 }
 
