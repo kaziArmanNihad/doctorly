@@ -14,9 +14,28 @@ export function usePatients(params = {}) {
     queryKey: patientKeys.list(params),
     queryFn: async () => {
       const { data } = await api.get("/patients", { params });
-      return data; // expect { patients, total, page, totalPages }
+      // backend returns { success, data: [...], meta: { total, page, limit, totalPages } }
+      return data;
     },
     placeholderData: (previousData) => previousData,
+  });
+}
+
+/** POST /patients */
+export function useCreatePatient() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (patient) => {
+      const { data } = await api.post("/patients", patient);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: patientKeys.all });
+      toast.success("Patient added.");
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Couldn't add patient.");
+    },
   });
 }
 

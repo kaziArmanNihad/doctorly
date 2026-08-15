@@ -42,16 +42,12 @@ function AddPatientModal({
 
   const onSubmit = async (data) => {
     try {
-      await onCreate({
-        ...data,
-        doctor: selectedDoctorId,
-      });
-
-      toast.success("Patient added successfully.");
+      await onCreate(data);
 
       reset();
       onClose();
-    } catch {
+    } catch (err) {
+      console.log(err, "error from add patient modal");
       toast.error("Failed to add patient.");
     }
   };

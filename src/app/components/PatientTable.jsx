@@ -22,7 +22,7 @@ function PatientTable({ patients, onEdit, onDelete }) {
           <tbody>
             {patients.map((patient) => (
               <PatientRow
-                key={patient.id}
+                key={patient._id}
                 patient={patient}
                 onEdit={onEdit}
                 onDelete={onDelete}

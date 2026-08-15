@@ -33,14 +33,18 @@ const PatientRow = memo(function PatientRow({ patient, onEdit, onDelete }) {
         <div className="flex items-center gap-1.5 text-[13px] text-[#4B564F]">
           <Stethoscope size={13} className="text-[#8A938D]" />
 
-          {patient.doctor}
+           {patient.doctorName ?? "Unassigned"}
         </div>
       </td>
 
       {/* Date */}
       <td className="px-5 py-3.5">
         <span className="font-mono text-[12.5px] text-[#5C6863]">
-          {patient.createdAt}
+          {new Date(patient.createdAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </span>
       </td>
 

@@ -11,99 +11,85 @@ import PatientToolbar from "../components/PatientToolbar";
 import PatientTable from "../components/PatientTable";
 import Pagination from "../components/Pagination";
 
-import { seedPatients } from "../utils/patientData";
 import { useDebounce } from "../hooks/useDebounce";
+import {
+  usePatients,
+  useCreatePatient,
+  useUpdatePatient,
+  useDeletePatient,
+} from "../hooks/usePatients";
+import { useDoctors } from "../hooks/useDoctors";
 
 const PAGE_SIZE = 7;
 
 function Patients() {
-  // State
-  const [patients, setPatients] = useState(seedPatients);
-
+  // Filter / pagination state (sent to the server, not applied client-side)
   const [search, setSearch] = useState("");
-
   const [condition, setCondition] = useState("all");
-
   const [doctor, setDoctor] = useState("all");
-
   const [dateFrom, setDateFrom] = useState("");
-
   const [dateTo, setDateTo] = useState("");
-
   const [page, setPage] = useState(1);
 
   const [addingPatient, setAddingPatient] = useState(false);
-
   const [editingPatient, setEditingPatient] = useState(null);
-
   const [deletingPatient, setDeletingPatient] = useState(null);
-
-  // Debounced Search
 
   const debouncedSearch = useDebounce(search, 400);
 
-  // Filter Options
-
-  const conditionOptions = useMemo(() => {
-    const conditions = new Set(patients.map((patient) => patient.condition));
-
-    return ["all", ...conditions];
-  }, [patients]);
-
-  const doctorOptions = useMemo(() => {
-    const doctors = new Set(patients.map((patient) => patient.doctor));
-
-    return ["all", ...doctors];
-  }, [patients]);
-
-  // Filtering
-
-  const filteredPatients = useMemo(() => {
-    const query = debouncedSearch.trim().toLowerCase();
-
-    return patients.filter((patient) => {
-      const matchesSearch =
-        !query ||
-        patient.name.toLowerCase().includes(query) ||
-        patient.condition.toLowerCase().includes(query) ||
-        patient.doctor.toLowerCase().includes(query) ||
-        patient.phone.toLowerCase().includes(query);
-
-      const matchesCondition =
-        condition === "all" || patient.condition === condition;
-
-      const matchesDoctor = doctor === "all" || patient.doctor === doctor;
-
-      const matchesDateFrom = !dateFrom || patient.createdAt >= dateFrom;
-
-      const matchesDateTo = !dateTo || patient.createdAt <= dateTo;
-
-      return (
-        matchesSearch &&
-        matchesCondition &&
-        matchesDoctor &&
-        matchesDateFrom &&
-        matchesDateTo
-      );
-    });
-  }, [patients, debouncedSearch, condition, doctor, dateFrom, dateTo]);
-
-  // Pagination
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredPatients.length / PAGE_SIZE),
+  // Build query params for the backend — it already supports all of this filtering
+  const queryParams = useMemo(
+    () => ({
+      search: debouncedSearch || undefined,
+      condition: condition !== "all" ? condition : undefined,
+      doctor: doctor !== "all" ? doctor : undefined,
+      dateFrom: dateFrom || undefined,
+      dateTo: dateTo || undefined,
+      page,
+      limit: PAGE_SIZE,
+    }),
+    [debouncedSearch, condition, doctor, dateFrom, dateTo, page],
   );
 
-  const currentPage = Math.min(page, totalPages);
+  const { data, isLoading, isError } = usePatients(queryParams);
+  const { data: doctorsData } = useDoctors({ limit: 100 });
+  const doctors = useMemo(() => doctorsData?.data ?? [], [doctorsData?.data]);
 
-  const paginatedPatients = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
+  const createPatient = useCreatePatient();
+  const updatePatient = useUpdatePatient();
+  const deletePatient = useDeletePatient();
 
-    return filteredPatients.slice(start, start + PAGE_SIZE);
-  }, [filteredPatients, currentPage]);
+  const patients = useMemo(() => data?.data ?? [], [data?.data]);
+  const meta = data?.meta ?? { total: 0, totalPages: 1 };
 
-  // Filter State
+  // Resolve doctor ObjectId -> readable name for the table and filter dropdown
+  const doctorNameById = useMemo(() => {
+    const map = new Map();
+    doctors.forEach((d) => map.set(d._id, d.name));
+    return map;
+  }, [doctors]);
+
+  const patientsWithDoctorName = useMemo(
+    () =>
+      patients.map((p) => ({
+        ...p,
+        doctorName: doctorNameById.get(p.doctor) || "Unassigned",
+      })),
+    [patients, doctorNameById],
+  );
+
+  const doctorOptions = useMemo(
+    () => ["all", ...doctors.map((d) => d._id)],
+    [doctors],
+  );
+
+  // Condition options come from the current filtered page; for a full distinct
+  // list across all patients you'd want a dedicated /patients/conditions
+  // endpoint (aggregate distinct) rather than deriving from one page.
+  const conditionOptions = useMemo(() => {
+    const conditions = new Set(patients.map((p) => p.condition));
+    return ["all", ...conditions];
+  }, [patients]);
 
   const hasActiveFilters =
     Boolean(search) ||
@@ -112,33 +98,26 @@ function Patients() {
     Boolean(dateFrom) ||
     Boolean(dateTo);
 
-  // Filter Handlers
-
   const handleSearchChange = (value) => {
     setSearch(value);
     setPage(1);
   };
-
   const handleConditionChange = (value) => {
     setCondition(value);
     setPage(1);
   };
-
   const handleDoctorChange = (value) => {
     setDoctor(value);
     setPage(1);
   };
-
   const handleDateFromChange = (value) => {
     setDateFrom(value);
     setPage(1);
   };
-
   const handleDateToChange = (value) => {
     setDateTo(value);
     setPage(1);
   };
-
   const resetFilters = () => {
     setSearch("");
     setCondition("all");
@@ -148,54 +127,27 @@ function Patients() {
     setPage(1);
   };
 
-  // Add Patient
-
   const handleCreatePatient = (patient) => {
-    setPatients((currentPatients) => [patient, ...currentPatients]);
-
-    setPage(1);
+    return createPatient.mutateAsync(patient).then(() => {
+      setPage(1);
+    });
   };
-
-  // Edit Patient
 
   const handleSavePatient = (patientId, updates) => {
-    setPatients((currentPatients) =>
-      currentPatients.map((patient) =>
-        patient.id === patientId
-          ? {
-              ...patient,
-              ...updates,
-            }
-          : patient,
-      ),
+    updatePatient.mutate(
+      { id: patientId, ...updates },
+      { onSuccess: () => setEditingPatient(null) },
     );
-
-    setEditingPatient(null);
   };
-
-  // Delete Patient
 
   const handleDeletePatient = (patientId) => {
-    setPatients((currentPatients) =>
-      currentPatients.filter((patient) => patient.id !== patientId),
-    );
-
-    setDeletingPatient(null);
-
-    // Prevent staying on an empty page after deleting the last patient.
-
-    setPage((currentPage) =>
-      Math.min(
-        currentPage,
-        Math.max(1, Math.ceil((patients.length - 1) / PAGE_SIZE)),
-      ),
-    );
+    deletePatient.mutate(patientId, {
+      onSuccess: () => setDeletingPatient(null),
+    });
   };
 
-  // Render
-
   return (
-    <div className="w-full bg-[#F6F5F0] font-sans text-[#16241F] antialiased">
+    <div className="w-full min-h-screen bg-[#F6F5F0] font-sans text-[#16241F] antialiased">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -205,27 +157,20 @@ function Patients() {
             fontSize: "13.5px",
             borderRadius: "8px",
           },
-
-          success: {
-            iconTheme: {
-              primary: "#E0A94A",
-              secondary: "#0F3D3A",
-            },
-          },
+          success: { iconTheme: { primary: "#E0A94A", secondary: "#0F3D3A" } },
         }}
       />
 
       <main className="mx-auto max-w-6xl px-6 py-10">
-        {/* { Header } */}
         <PageHeader onAddPatient={() => setAddingPatient(true)} />
 
-        {/* { Toolbar } */}
         <PatientToolbar
           search={search}
           condition={condition}
           doctor={doctor}
           conditions={conditionOptions}
           doctors={doctorOptions}
+          doctorNameById={doctorNameById}
           dateFrom={dateFrom}
           dateTo={dateTo}
           hasFilters={hasActiveFilters}
@@ -237,40 +182,47 @@ function Patients() {
           onReset={resetFilters}
         />
 
-        {/* { Patient Table } */}
-        <PatientTable
-          patients={paginatedPatients}
-          onEdit={setEditingPatient}
-          onDelete={setDeletingPatient}
-        />
+        {isLoading ? (
+          <p className="py-10 text-center text-[13.5px] text-[#5C6863]">
+            Loading patients…
+          </p>
+        ) : isError ? (
+          <p className="py-10 text-center text-[13.5px] text-red-600">
+            Couldn&#39;t load patients.
+          </p>
+        ) : (
+          <>
+            <PatientTable
+              patients={patientsWithDoctorName}
+              onEdit={setEditingPatient}
+              onDelete={setDeletingPatient}
+            />
 
-        {/* { Pagination } */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredPatients.length}
-          pageSize={PAGE_SIZE}
-          onPageChange={setPage}
-        />
+            <Pagination
+              currentPage={meta.page ?? page}
+              totalPages={meta.totalPages}
+              totalItems={meta.total}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
+          </>
+        )}
       </main>
 
-      {/* { Add Patient } */}
       <AddPatientModal
         open={addingPatient}
         onClose={() => setAddingPatient(false)}
         onCreate={handleCreatePatient}
-        doctors={doctorOptions}
+        doctors={doctors}
         condition={condition}
       />
 
-      {/* { Edit Patient } */}
       <EditPatientModal
         patient={editingPatient}
         onClose={() => setEditingPatient(null)}
         onSave={handleSavePatient}
       />
 
-      {/* { Delete Patient } */}
       <DeleteConfirmModal
         patient={deletingPatient}
         onClose={() => setDeletingPatient(null)}
@@ -280,8 +232,6 @@ function Patients() {
   );
 }
 
-//  Page Header
-
 function PageHeader({ onAddPatient }) {
   return (
     <div className="mb-8 flex items-end justify-between gap-4">
@@ -289,7 +239,6 @@ function PageHeader({ onAddPatient }) {
         <h1 className="font-serif-display text-[28px] font-[560] text-[#0F1F1B]">
           Patients
         </h1>
-
         <p className="mt-1 text-[14px] text-[#5C6863]">
           Every patient across all doctors, in one searchable list.
         </p>
