@@ -33,7 +33,7 @@ const PatientRow = memo(function PatientRow({ patient, onEdit, onDelete }) {
         <div className="flex items-center gap-1.5 text-[13px] text-[#4B564F]">
           <Stethoscope size={13} className="text-[#8A938D]" />
 
-           {patient.doctorName ?? "Unassigned"}
+          {patient.doctorName ?? "Unassigned"}
         </div>
       </td>
 

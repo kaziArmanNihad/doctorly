@@ -5,7 +5,6 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
   // MongoDB uses _id
   const doctorId = doctor?._id;
 
-
   const handleViewPatients = () => {
     if (!doctorId) {
       console.error("Doctor ID is missing:", doctor);

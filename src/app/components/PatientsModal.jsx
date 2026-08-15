@@ -48,7 +48,7 @@ function PatientsModal({
     onClose();
   };
 
-  console.log(doctorPatients)
+  console.log(doctorPatients);
 
   return (
     <>

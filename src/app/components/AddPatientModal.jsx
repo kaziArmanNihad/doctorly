@@ -48,7 +48,7 @@ function AddPatientModal({
       onClose();
     } catch (err) {
       console.log(err, "error from add patient modal");
-      toast.error("Failed to add patient.");
+      toast.error(err?.response?.data?.message || "Couldn't add patient.");
     }
   };
 
