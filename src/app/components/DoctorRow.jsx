@@ -5,11 +5,6 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
   // MongoDB uses _id
   const doctorId = doctor?._id;
 
-  // If patients are included in the doctor response,
-  // show their count. Otherwise show 0.
-  const patientCount = Array.isArray(doctor?.patients)
-    ? doctor.patients.length
-    : 0;
 
   const handleViewPatients = () => {
     if (!doctorId) {
@@ -70,7 +65,7 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
       {/* Patients count */}
       <td className="px-5 py-3.5">
         <span className="font-mono text-[13px] text-[#0F3D3A]">
-          {patientCount}
+          {doctor.patientCount}
         </span>
       </td>
 

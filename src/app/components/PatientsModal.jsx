@@ -48,6 +48,8 @@ function PatientsModal({
     onClose();
   };
 
+  console.log(doctorPatients)
+
   return (
     <>
       <div className="fixed inset-0 z-40 flex items-center justify-center bg-[#0F1F1B]/40 px-4">

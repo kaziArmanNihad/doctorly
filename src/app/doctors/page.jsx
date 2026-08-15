@@ -18,7 +18,6 @@ import {
   useDoctorPatients,
   useAddPatientToDoctor,
   useDeletePatientFromDoctor,
-  useDoctor,
 } from "../hooks/useDoctors";
 
 const PAGE_SIZE = 6;

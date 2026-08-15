@@ -18,7 +18,7 @@ function DoctorTable({ doctors, onViewPatients }) {
           <tbody>
             {doctors.map((doctor) => (
               <DoctorRow
-                key={doctor.id}
+                key={doctor._id}
                 doctor={doctor}
                 onViewPatients={onViewPatients}
               />
