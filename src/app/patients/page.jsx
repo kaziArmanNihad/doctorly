@@ -134,10 +134,7 @@ function Patients() {
   };
 
   const handleSavePatient = (patientId, updates) => {
-    updatePatient.mutate(
-      { id: patientId, ...updates },
-      { onSuccess: () => setEditingPatient(null) },
-    );
+    return updatePatient.mutateAsync({ id: patientId, ...updates });
   };
 
   const handleDeletePatient = (patientId) => {
@@ -221,6 +218,7 @@ function Patients() {
         patient={editingPatient}
         onClose={() => setEditingPatient(null)}
         onSave={handleSavePatient}
+        doctors={doctors}
       />
 
       <DeleteConfirmModal

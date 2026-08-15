@@ -8,13 +8,14 @@ export const patientKeys = {
   detail: (id) => ["patients", "detail", id],
 };
 
+const doctorsAllKey = ["doctors"]; 
+
 /** GET /patients?search=&condition=&doctor=&dateFrom=&dateTo=&page=&limit= */
 export function usePatients(params = {}) {
   return useQuery({
     queryKey: patientKeys.list(params),
     queryFn: async () => {
       const { data } = await api.get("/patients", { params });
-      // backend returns { success, data: [...], meta: { total, page, limit, totalPages } }
       return data;
     },
     placeholderData: (previousData) => previousData,
@@ -31,6 +32,7 @@ export function useCreatePatient() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: patientKeys.all });
+      queryClient.invalidateQueries({ queryKey: doctorsAllKey }); // patientCount changed
       toast.success("Patient added.");
     },
     onError: (error) => {
@@ -49,6 +51,7 @@ export function useUpdatePatient() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: patientKeys.all });
+      queryClient.invalidateQueries({ queryKey: doctorsAllKey }); // doctor may have been reassigned
       toast.success("Patient updated.");
     },
     onError: (error) => {
@@ -67,6 +70,7 @@ export function useDeletePatient() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: patientKeys.all });
+      queryClient.invalidateQueries({ queryKey: doctorsAllKey }); // patientCount changed
       toast.success("Patient deleted.");
     },
     onError: (error) => {

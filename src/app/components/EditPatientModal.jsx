@@ -1,15 +1,13 @@
 import { Loader2, X } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
 import Field from "./Field";
-import { updatePatient } from "../utils/patientData";
 
 const inputBase =
   "w-full rounded-md border bg-white px-3.5 py-2.5 text-[14px] text-[#16241F] placeholder:text-[#A6AEA8] outline-none transition-colors focus:border-[#0F3D3A] focus:ring-1 focus:ring-[#0F3D3A]";
 
-function EditPatientModal({ patient, onClose, onSave }) {
+function EditPatientModal({ patient, onClose, onSave, doctors = [] }) {
   const {
     register,
     handleSubmit,
@@ -19,20 +17,17 @@ function EditPatientModal({ patient, onClose, onSave }) {
     mode: "onBlur",
   });
 
-  /*
-   * Important:
-   * When the selected patient changes,
-   * update the form values.
-   */
   useEffect(() => {
     if (!patient) return;
 
     reset({
       name: patient.name,
       age: patient.age,
+      gender: patient.gender,
       condition: patient.condition,
       doctor: patient.doctor,
       phone: patient.phone,
+      email: patient.email,
     });
   }, [patient, reset]);
 
@@ -40,18 +35,10 @@ function EditPatientModal({ patient, onClose, onSave }) {
 
   const onSubmit = async (data) => {
     try {
-      // Replace with API call later.
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const updatedPatient = updatePatient(data);
-
-      onSave(patient.id, updatedPatient);
-
-      toast.success("Patient updated.");
-
+      await onSave(patient._id, data);
       onClose();
     } catch {
-      toast.error("Failed to update patient.");
+      // Keep modal open if update fails
     }
   };
 
@@ -79,6 +66,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
           noValidate
           className="flex flex-col gap-4"
         >
+          {/* Name */}
           <Field label="Full name" error={errors.name}>
             <input
               autoFocus
@@ -96,6 +84,56 @@ function EditPatientModal({ patient, onClose, onSave }) {
             />
           </Field>
 
+          {/* Email */}
+          <Field label="Email" error={errors.email}>
+            <input
+              type="email"
+              placeholder="patient@example.com"
+              className={`${inputBase} ${
+                errors.email ? "border-[#B3432D]" : "border-[#DCE3DC]"
+              }`}
+              {...register("email", {
+                required: "Enter the patient's email.",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Enter a valid email address.",
+                },
+              })}
+            />
+          </Field>
+
+          {/* condition + phone */}
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Condition" error={errors.condition}>
+              <input
+                type="text"
+                className={`${inputBase} ${
+                  errors.condition ? "border-[#B3432D]" : "border-[#DCE3DC]"
+                }`}
+                {...register("condition", {
+                  required: "Enter the patient's condition.",
+                })}
+              />
+            </Field>
+
+            <Field label="Phone" error={errors.phone}>
+              <input
+                type="tel"
+                className={`${inputBase} ${
+                  errors.phone ? "border-[#B3432D]" : "border-[#DCE3DC]"
+                }`}
+                {...register("phone", {
+                  required: "Enter a phone number.",
+                  pattern: {
+                    value: /^[0-9+\-\s()]{7,20}$/,
+                    message: "Invalid phone number.",
+                  },
+                })}
+              />
+            </Field>
+          </div>
+
+          {/* Age + Gender */}
           <div className="grid grid-cols-2 gap-4">
             <Field label="Age" error={errors.age}>
               <input
@@ -120,47 +158,44 @@ function EditPatientModal({ patient, onClose, onSave }) {
               />
             </Field>
 
-            <Field label="Condition" error={errors.condition}>
-              <input
-                type="text"
+            <Field label="Gender" error={errors.gender}>
+              <select
                 className={`${inputBase} ${
-                  errors.condition ? "border-[#B3432D]" : "border-[#DCE3DC]"
+                  errors.gender ? "border-[#B3432D]" : "border-[#DCE3DC]"
                 }`}
-                {...register("condition", {
-                  required: "Enter the patient's condition.",
+                {...register("gender", {
+                  required: "Select the patient's gender.",
                 })}
-              />
+              >
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
             </Field>
           </div>
 
+          {/* Doctor */}
           <Field label="Assigned doctor" error={errors.doctor}>
-            <input
-              type="text"
+            <select
               className={`${inputBase} ${
                 errors.doctor ? "border-[#B3432D]" : "border-[#DCE3DC]"
               }`}
               {...register("doctor", {
-                required: "Enter the assigned doctor.",
+                required: "Select the assigned doctor.",
               })}
-            />
+            >
+              <option value="">Select a doctor</option>
+
+              {doctors.map((doctor) => (
+                <option key={doctor._id} value={doctor._id}>
+                  {doctor.name}
+                </option>
+              ))}
+            </select>
           </Field>
 
-          <Field label="Phone" error={errors.phone}>
-            <input
-              type="tel"
-              className={`${inputBase} ${
-                errors.phone ? "border-[#B3432D]" : "border-[#DCE3DC]"
-              }`}
-              {...register("phone", {
-                required: "Enter a phone number.",
-                pattern: {
-                  value: /^[0-9+\-\s()]{7,20}$/,
-                  message: "Invalid phone number.",
-                },
-              })}
-            />
-          </Field>
-
+          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
