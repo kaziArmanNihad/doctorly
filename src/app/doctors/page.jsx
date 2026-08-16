@@ -15,7 +15,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import {
   useDoctors,
   useCreateDoctor,
-  useDoctorPatients,
+  useDoctor,
   useAddPatientToDoctor,
   useDeletePatientFromDoctor,
 } from "../hooks/useDoctors";
@@ -93,12 +93,14 @@ export default function Doctors() {
   // --------------------------------------------------
 
   const {
-    data: patientsData,
+    data: doctorDetail,
     isLoading: patientsLoading,
     isError: patientsError,
-  } = useDoctorPatients(viewingDoctorId);
+  } = useDoctor(viewingDoctorId);
 
-  const patients = patientsData?.data ?? [];
+  const patients = doctorDetail?.data?.patients ?? [];
+  const patientCount = doctorDetail?.data?.patientCount ?? 0;
+  // console.log("doctorDetail:", doctorDetail);
 
   // --------------------------------------------------
   // Add Patient

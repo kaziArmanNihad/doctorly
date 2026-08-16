@@ -2,7 +2,6 @@ import { Loader2, Plus, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Field from "./Field";
-import { createDoctor } from "../utils/doctorData";
 
 const inputBase =
   "w-full rounded-md border bg-white px-3.5 py-2.5 text-[14px] text-[#16241F] placeholder:text-[#A6AEA8] outline-none transition-colors focus:border-[#0F3D3A] focus:ring-1 focus:ring-[#0F3D3A]";

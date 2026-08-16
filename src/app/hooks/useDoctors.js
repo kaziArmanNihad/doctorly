@@ -6,7 +6,6 @@ export const doctorKeys = {
   all: ["doctors"],
   list: (params) => ["doctors", "list", params],
   detail: (id) => ["doctors", "detail", id],
-  patients: (id) => ["doctors", "detail", id, "patients"],
 };
 
 /** GET /doctors?search=&specialization=&dateFrom=&dateTo=&page=&limit= */
@@ -18,28 +17,15 @@ export function useDoctors(params = {}) {
       return data;
     },
     placeholderData: (previousData) => previousData,
-    // smooth pagination, no flash of empty state
   });
 }
 
-/** GET /doctors/:id */
+/** GET /doctors/:id — returns { doctor, patients, patientCount } */
 export function useDoctor(id) {
   return useQuery({
     queryKey: doctorKeys.detail(id),
     queryFn: async () => {
       const { data } = await api.get(`/doctors/${id}`);
-      return data;
-    },
-    enabled: !!id,
-  });
-}
-
-/** GET /doctors/:id/patients */
-export function useDoctorPatients(id) {
-  return useQuery({
-    queryKey: doctorKeys.patients(id),
-    queryFn: async () => {
-      const { data } = await api.get(`/doctors/${id}/patients`);
       return data;
     },
     enabled: !!id,
@@ -64,22 +50,25 @@ export function useCreateDoctor() {
   });
 }
 
-/** POST /doctors/:id/patients */
+/**
+ * POST /patients — scoped to a specific doctor's "view patients" modal.
+ * There is no nested /doctors/:id/patients route on the backend; patient
+ * creation always goes through the real /patients endpoint, with `doctor`
+ * defaulted to the doctor currently being viewed.
+ */
 export function useAddPatientToDoctor(doctorId) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (patientData) => {
-      const { data } = await api.post(
-        `/doctors/${doctorId}/patients`,
-        patientData,
-      );
+      const { data } = await api.post("/patients", {
+        ...patientData,
+        doctor: patientData.doctor || doctorId,
+      });
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: doctorKeys.patients(doctorId),
-      });
-      queryClient.invalidateQueries({ queryKey: doctorKeys.detail(doctorId) });
+      queryClient.invalidateQueries({ queryKey: doctorKeys.all });
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
       toast.success("Patient added.");
     },
     onError: (error) => {
@@ -88,20 +77,17 @@ export function useAddPatientToDoctor(doctorId) {
   });
 }
 
-/** DELETE /doctors/:id/patients/:patientId */
+/** DELETE /patients/:patientId — same reasoning, no nested route exists. */
 export function useDeletePatientFromDoctor(doctorId) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (patientId) => {
-      const { data } = await api.delete(
-        `/doctors/${doctorId}/patients/${patientId}`,
-      );
+      const { data } = await api.delete(`/patients/${patientId}`);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: doctorKeys.patients(doctorId),
-      });
+      queryClient.invalidateQueries({ queryKey: doctorKeys.all });
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
       toast.success("Patient removed.");
     },
     onError: (error) => {

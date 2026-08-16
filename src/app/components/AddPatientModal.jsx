@@ -1,4 +1,5 @@
 import { Loader2, Plus, X } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -12,8 +13,7 @@ function AddPatientModal({
   onClose,
   onCreate,
   doctors = [],
-  selectedDoctorId = "",
-  selectedDoctorName = "",
+  defaultDoctorId = "",
 }) {
   const {
     register,
@@ -25,11 +25,27 @@ function AddPatientModal({
     defaultValues: {
       name: "",
       age: "",
+      gender: "",
       condition: "",
-      doctor: "",
+      doctor: defaultDoctorId,
       phone: "",
+      email: "",
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        name: "",
+        age: "",
+        gender: "",
+        condition: "",
+        doctor: defaultDoctorId,
+        phone: "",
+        email: "",
+      });
+    }
+  }, [open, defaultDoctorId, reset]);
 
   if (!open) return null;
 
@@ -43,11 +59,11 @@ function AddPatientModal({
   const onSubmit = async (data) => {
     try {
       await onCreate(data);
-
       reset();
       onClose();
     } catch (err) {
       console.log(err, "error from add patient modal");
+
       toast.error(err?.response?.data?.message || "Couldn't add patient.");
     }
   };
@@ -102,7 +118,25 @@ function AddPatientModal({
             />
           </Field>
 
-          {/* Age + Condition */}
+          {/* Email */}
+          <Field label="Email" error={errors.email}>
+            <input
+              type="email"
+              placeholder="patient@example.com"
+              className={`${inputBase} ${
+                errors.email ? "border-[#B3432D]" : "border-[#DCE3DC]"
+              }`}
+              {...register("email", {
+                required: "Enter the patient's email.",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Enter a valid email address.",
+                },
+              })}
+            />
+          </Field>
+
+          {/* Age + Gender */}
           <div className="grid grid-cols-2 gap-4">
             <Field label="Age" error={errors.age}>
               <input
@@ -128,6 +162,25 @@ function AddPatientModal({
               />
             </Field>
 
+            <Field label="Gender" error={errors.gender}>
+              <select
+                className={`${inputBase} ${
+                  errors.gender ? "border-[#B3432D]" : "border-[#DCE3DC]"
+                }`}
+                {...register("gender", {
+                  required: "Select the patient's gender.",
+                })}
+              >
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </Field>
+          </div>
+
+          {/* Condition + Phone */}
+          <div className="grid grid-cols-2 gap-4">
             <Field label="Condition" error={errors.condition}>
               <input
                 type="text"
@@ -137,6 +190,22 @@ function AddPatientModal({
                 }`}
                 {...register("condition", {
                   required: "Enter the patient's condition.",
+                })}
+              />
+            </Field>
+            <Field label="Phone" error={errors.phone}>
+              <input
+                type="tel"
+                placeholder="+1 415 555 0100"
+                className={`${inputBase} ${
+                  errors.phone ? "border-[#B3432D]" : "border-[#DCE3DC]"
+                }`}
+                {...register("phone", {
+                  required: "Enter a phone number.",
+                  pattern: {
+                    value: /^[0-9+\-\s()]{7,20}$/,
+                    message: "Invalid phone number.",
+                  },
                 })}
               />
             </Field>
@@ -150,6 +219,7 @@ function AddPatientModal({
               }`}
               {...register("doctor", {
                 required: "Select the assigned doctor.",
+                setValueAs: (v) => (v ? v.trim() : v),
               })}
             >
               <option value="">Select a doctor</option>
@@ -160,24 +230,6 @@ function AddPatientModal({
                 </option>
               ))}
             </select>
-          </Field>
-
-          {/* Phone */}
-          <Field label="Phone" error={errors.phone}>
-            <input
-              type="tel"
-              placeholder="+1 415 555 0100"
-              className={`${inputBase} ${
-                errors.phone ? "border-[#B3432D]" : "border-[#DCE3DC]"
-              }`}
-              {...register("phone", {
-                required: "Enter a phone number.",
-                pattern: {
-                  value: /^[0-9+\-\s()]{7,20}$/,
-                  message: "Invalid phone number.",
-                },
-              })}
-            />
           </Field>
 
           {/* Submit */}

@@ -48,7 +48,6 @@ function PatientsModal({
     onClose();
   };
 
-
   return (
     <>
       <div className="fixed inset-0 z-40 flex items-center justify-center bg-[#0F1F1B]/40 px-4">
@@ -108,8 +107,7 @@ function PatientsModal({
         onClose={() => setShowAddPatient(false)}
         onCreate={handlePatientCreated}
         doctors={doctors}
-        selectedDoctorId={doctor._id}
-        selectedDoctorName={doctor.name}
+        defaultDoctorId={doctor._id}
       />
     </>
   );
