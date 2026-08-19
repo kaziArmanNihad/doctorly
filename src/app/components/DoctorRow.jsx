@@ -14,6 +14,8 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
     onViewPatients(doctorId);
   };
 
+  console.log(doctor, "doctor");
+
   return (
     <tr className="border-b border-[#EDEBE1] last:border-0 hover:bg-[#F6F5F0]/60">
       {/* Doctor */}
@@ -64,7 +66,7 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
       {/* Patients count */}
       <td className="px-5 py-3.5">
         <span className="font-mono text-[13px] text-[#0F3D3A]">
-          {doctor.patientCount}
+          {doctor.patients.length ? doctor.patients.length : "0"}
         </span>
       </td>
 

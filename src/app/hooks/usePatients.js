@@ -8,7 +8,7 @@ export const patientKeys = {
   detail: (id) => ["patients", "detail", id],
 };
 
-const doctorsAllKey = ["doctors"]; 
+const doctorsAllKey = ["doctors"];
 
 /** GET /patients?search=&condition=&doctor=&dateFrom=&dateTo=&page=&limit= */
 export function usePatients(params = {}) {

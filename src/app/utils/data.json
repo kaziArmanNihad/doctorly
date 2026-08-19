@@ -7,7 +7,8 @@
     "email": "marcus.vance@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Amina Rahman",
@@ -17,7 +18,8 @@
     "email": "amina.rahman@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Samuel Osei",
@@ -27,7 +29,8 @@
     "email": "samuel.osei@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Layla Haddad",
@@ -37,7 +40,8 @@
     "email": "layla.haddad@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Marcus Chen",
@@ -47,7 +51,8 @@
     "email": "marcus.chen@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Priya Nair",
@@ -57,7 +62,8 @@
     "email": "priya.nair@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Tobias Weber",
@@ -67,7 +73,8 @@
     "email": "tobias.weber@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Grace Kim",
@@ -77,7 +84,8 @@
     "email": "grace.kim@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Elena Torres",
@@ -87,7 +95,8 @@
     "email": "elena.torres@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   },
   {
     "name": "Dr. Farid Kassem",
@@ -97,6 +106,7 @@
     "email": "farid.kassem@doctorly.app",
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T18:57:00.000Z",
-    "updatedAt": "2026-08-14T18:57:00.000Z"
+    "updatedAt": "2026-08-14T18:57:00.000Z",
+    "patients": []
   }
 ]
