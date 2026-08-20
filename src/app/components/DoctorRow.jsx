@@ -2,7 +2,6 @@ import { Building2, Mail, Phone, Stethoscope, Users } from "lucide-react";
 import { memo } from "react";
 
 const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
-  // MongoDB uses _id
   const doctorId = doctor?._id;
 
   const handleViewPatients = () => {
@@ -13,8 +12,6 @@ const DoctorRow = memo(function DoctorRow({ doctor, onViewPatients }) {
 
     onViewPatients(doctorId);
   };
-
-  console.log(doctor, "doctor");
 
   return (
     <tr className="border-b border-[#EDEBE1] last:border-0 hover:bg-[#F6F5F0]/60">

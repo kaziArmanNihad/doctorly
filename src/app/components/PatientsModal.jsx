@@ -116,8 +116,8 @@ function PatientsModal({
 function PatientList({ patients, onDelete }) {
   return (
     <div className="flex flex-col divide-y divide-[#E2E0D6]">
-      {patients.map((patient) => (
-        <PatientRow key={patient._id} patient={patient} onDelete={onDelete} />
+      {patients.map((patient, index) => (
+        <PatientRow key={index} patient={patient} onDelete={onDelete} />
       ))}
     </div>
   );

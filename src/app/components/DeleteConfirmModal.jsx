@@ -14,7 +14,7 @@ function DeleteConfirmModal({ patient, onClose, onConfirm }) {
       // Replace with API request later.
       await new Promise((resolve) => setTimeout(resolve, 400));
 
-      onConfirm(patient.id);
+      onConfirm(patient._id);
 
       toast.success(`${patient.name} deleted.`);
 
