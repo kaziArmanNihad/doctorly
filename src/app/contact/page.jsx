@@ -38,15 +38,17 @@ export default function Contact() {
     formState: { errors, isSubmitting },
   } = useForm({ mode: "onBlur" });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async () => {
     try {
       // Replace with your actual API call, e.g.:
-      // await fetch("/api/contact", { method: "POST", body: JSON.stringify(data) });
+
+      // console.log(data)
       await new Promise((resolve) => setTimeout(resolve, 900));
 
       toast.success("Message sent — we'll get back to you shortly.");
       reset();
     } catch (err) {
+      console.log("error :", err);
       toast.error("Something went wrong. Please try again.");
     }
   };
