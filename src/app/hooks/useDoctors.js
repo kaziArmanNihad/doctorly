@@ -8,7 +8,6 @@ export const doctorKeys = {
   detail: (id) => ["doctors", "detail", id],
 };
 
-/** GET /doctors?search=&specialization=&dateFrom=&dateTo=&page=&limit= */
 export function useDoctors(params = {}) {
   return useQuery({
     queryKey: doctorKeys.list(params),
@@ -20,7 +19,6 @@ export function useDoctors(params = {}) {
   });
 }
 
-/** GET /doctors/:id — returns { doctor, patients, patientCount } */
 export function useDoctor(id) {
   return useQuery({
     queryKey: doctorKeys.detail(id),
@@ -32,7 +30,6 @@ export function useDoctor(id) {
   });
 }
 
-/** POST /doctors */
 export function useCreateDoctor() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -50,12 +47,6 @@ export function useCreateDoctor() {
   });
 }
 
-/**
- * POST /patients — scoped to a specific doctor's "view patients" modal.
- * There is no nested /doctors/:id/patients route on the backend; patient
- * creation always goes through the real /patients endpoint, with `doctor`
- * defaulted to the doctor currently being viewed.
- */
 export function useAddPatientToDoctor(doctorId) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -77,8 +68,7 @@ export function useAddPatientToDoctor(doctorId) {
   });
 }
 
-/** DELETE /patients/:patientId — same reasoning, no nested route exists. */
-export function useDeletePatientFromDoctor(doctorId) {
+export function useDeletePatientFromDoctor() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (patientId) => {

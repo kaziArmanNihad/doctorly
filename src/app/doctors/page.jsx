@@ -23,30 +23,19 @@ import {
 const PAGE_SIZE = 6;
 
 export default function Doctors() {
-  // --------------------------------------------------
   // Filters
-  // --------------------------------------------------
-
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 400);
-
   const [specialization, setSpecialization] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-
   const [page, setPage] = useState(1);
 
-  // --------------------------------------------------
   // Modals
-  // --------------------------------------------------
-
   const [showAddDoctor, setShowAddDoctor] = useState(false);
   const [viewingDoctorId, setViewingDoctorId] = useState(null);
 
-  // --------------------------------------------------
   // Doctors
-  // --------------------------------------------------
-
   const { data, isLoading, isError, error } = useDoctors({
     search: debouncedSearch,
     specialization: specialization === "all" ? "" : specialization,
@@ -57,14 +46,10 @@ export default function Doctors() {
   });
 
   const doctors = useMemo(() => data?.data ?? [], [data?.data]);
-
   const totalItems = data?.meta?.total ?? 0;
   const totalPages = data?.meta?.totalPages ?? 1;
 
-  // --------------------------------------------------
   // Create Doctor
-  // --------------------------------------------------
-
   const createDoctor = useCreateDoctor();
 
   const handleCreateDoctor = async (doctorData) => {
@@ -78,19 +63,14 @@ export default function Doctors() {
     }
   };
 
-  // --------------------------------------------------
   // Selected Doctor
-  // --------------------------------------------------
-
   const viewingDoctor = useMemo(() => {
     if (!viewingDoctorId) return null;
 
     return doctors.find((doctor) => doctor._id === viewingDoctorId);
   }, [doctors, viewingDoctorId]);
 
-  // --------------------------------------------------
   // Get Patients For Selected Doctor
-  // --------------------------------------------------
 
   const {
     data: doctorDetail,
@@ -99,13 +79,8 @@ export default function Doctors() {
   } = useDoctor(viewingDoctorId);
 
   const patients = doctorDetail?.data?.patients ?? [];
-  const patientCount = doctorDetail?.data?.patientCount ?? 0;
-  // console.log("doctorDetail:", doctorDetail);
 
-  // --------------------------------------------------
   // Add Patient
-  // --------------------------------------------------
-
   const addPatient = useAddPatientToDoctor(viewingDoctorId);
 
   const handleAddPatient = async (patientData) => {
@@ -117,10 +92,7 @@ export default function Doctors() {
     }
   };
 
-  // --------------------------------------------------
   // Delete Patient
-  // --------------------------------------------------
-
   const deletePatient = useDeletePatientFromDoctor(viewingDoctorId);
 
   const handleDeletePatient = async (patientId) => {
@@ -132,10 +104,7 @@ export default function Doctors() {
     }
   };
 
-  // --------------------------------------------------
   // Reset Filters
-  // --------------------------------------------------
-
   const handleResetFilters = () => {
     setSearch("");
     setSpecialization("all");
@@ -150,10 +119,7 @@ export default function Doctors() {
     Boolean(dateFrom) ||
     Boolean(dateTo);
 
-  // --------------------------------------------------
   // Specializations
-  // --------------------------------------------------
-
   const specializations = useMemo(() => {
     return [
       "all",
@@ -163,10 +129,7 @@ export default function Doctors() {
     ];
   }, [doctors]);
 
-  // --------------------------------------------------
   // Loading
-  // --------------------------------------------------
-
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -175,10 +138,7 @@ export default function Doctors() {
     );
   }
 
-  // --------------------------------------------------
   // Error
-  // --------------------------------------------------
-
   if (isError) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -287,10 +247,7 @@ export default function Doctors() {
   );
 }
 
-// --------------------------------------------------
 // Page Header
-// --------------------------------------------------
-
 function PageHeader({ onAddDoctor }) {
   return (
     <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">

@@ -9,7 +9,6 @@ export const userKeys = {
   detail: (id) => ["users", "detail", id],
 };
 
-/** GET /users/me — the logged-in user's own record */
 export function useCurrentUser(options = {}) {
   return useQuery({
     queryKey: userKeys.me,
@@ -18,16 +17,14 @@ export function useCurrentUser(options = {}) {
       return data;
     },
     retry: false,
-    ...options, // pass { enabled: !!firebaseUser } from the caller
+    ...options,
   });
 }
 
-// POST /users — create/sync
 export function useSyncUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (userData) => {
-      // userData: { uid, name, email }
       const { data } = await api.post("/users", userData);
       return data;
     },
@@ -42,7 +39,6 @@ export function useSyncUser() {
   });
 }
 
-/** PUT /users/me — update the current user's own profile */
 export function useUpdateCurrentUser() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -60,7 +56,6 @@ export function useUpdateCurrentUser() {
   });
 }
 
-/** GET /users?search=&role=&page= — admin-only list of all users */
 export function useUsers(params = {}) {
   return useQuery({
     queryKey: userKeys.list(params),
@@ -72,7 +67,6 @@ export function useUsers(params = {}) {
   });
 }
 
-/** PATCH /users/:id/role — admin updates another user's role/permissions */
 export function useUpdateUserRole() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -92,7 +86,6 @@ export function useUpdateUserRole() {
   });
 }
 
-/** DELETE /users/:id — admin removes a user */
 export function useDeleteUser() {
   const queryClient = useQueryClient();
   return useMutation({

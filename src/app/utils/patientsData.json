@@ -6,7 +6,9 @@
     "condition": "ACL Tear",
     "phone": "+8801600001111",
     "email": "mahmudul.h@example.com",
-    "doctor": "6a7f9528362273143ff8a4d5",
+    "doctor": {
+      "$oid": "6a857b747938935bb859cd09"
+    },
     "createdBy": "66bc3f12a4f8d2b901a8c901",
     "createdAt": "2026-08-14T19:41:00.000Z",
     "updatedAt": "2026-08-14T19:41:00.000Z"

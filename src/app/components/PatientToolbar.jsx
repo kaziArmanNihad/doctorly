@@ -99,8 +99,8 @@ function FilterSelect({ value, options, allLabel, onChange }) {
       className="rounded-md border border-[#DCE3DC] bg-white px-3 py-2.5 text-[13.5px] text-[#16241F] outline-none focus:border-[#0F3D3A]"
     >
       {options.map((option) => (
-        <option key={option} value={option}>
-          {option === "all" ? allLabel : option}
+        <option key={option.value ?? option} value={option.value ?? option}>
+          {option.label ?? (option === "all" ? allLabel : option)}
         </option>
       ))}
     </select>

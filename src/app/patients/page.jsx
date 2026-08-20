@@ -79,13 +79,13 @@ function Patients() {
   );
 
   const doctorOptions = useMemo(
-    () => ["all", ...doctors.map((d) => d._id)],
+    () => [
+      { value: "all", label: "All doctors" },
+      ...doctors.map((d) => ({ value: d._id, label: d.name })),
+    ],
     [doctors],
   );
 
-  // Condition options come from the current filtered page; for a full distinct
-  // list across all patients you'd want a dedicated /patients/conditions
-  // endpoint (aggregate distinct) rather than deriving from one page.
   const conditionOptions = useMemo(() => {
     const conditions = new Set(patients.map((p) => p.condition));
     return ["all", ...conditions];

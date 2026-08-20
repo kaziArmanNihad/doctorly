@@ -10,7 +10,6 @@ export const patientKeys = {
 
 const doctorsAllKey = ["doctors"];
 
-/** GET /patients?search=&condition=&doctor=&dateFrom=&dateTo=&page=&limit= */
 export function usePatients(params = {}) {
   return useQuery({
     queryKey: patientKeys.list(params),
@@ -22,7 +21,6 @@ export function usePatients(params = {}) {
   });
 }
 
-/** POST /patients */
 export function useCreatePatient() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -41,7 +39,6 @@ export function useCreatePatient() {
   });
 }
 
-/** PUT /patients/:id */
 export function useUpdatePatient() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -60,7 +57,6 @@ export function useUpdatePatient() {
   });
 }
 
-/** DELETE /patients/:id */
 export function useDeletePatient() {
   const queryClient = useQueryClient();
   return useMutation({

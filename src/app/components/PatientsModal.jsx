@@ -17,8 +17,6 @@ function PatientsModal({
 
   if (!doctor) return null;
 
-  // Use patients prop if available.
-  // Otherwise use patients from the selected doctor.
   const doctorPatients = doctor.patients || [];
 
   const patientList = patients.length > 0 ? patients : doctorPatients;
