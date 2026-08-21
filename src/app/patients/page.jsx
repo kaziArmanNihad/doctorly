@@ -20,7 +20,7 @@ import {
 } from "../hooks/usePatients";
 import { useDoctors } from "../hooks/useDoctors";
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 10;
 
 function Patients() {
   // Filter / pagination state (sent to the server, not applied client-side)
@@ -52,6 +52,7 @@ function Patients() {
   );
 
   const { data, isLoading, isError } = usePatients(queryParams);
+  const { data: allPatientsData } = usePatients({ limit: 1000 });
   const { data: doctorsData } = useDoctors({ limit: 100 });
   const doctors = useMemo(() => doctorsData?.data ?? [], [doctorsData?.data]);
 
@@ -87,9 +88,13 @@ function Patients() {
   );
 
   const conditionOptions = useMemo(() => {
-    const conditions = new Set(patients.map((p) => p.condition));
+    const conditions = new Set(
+      (allPatientsData?.data ?? [])
+        .map((patient) => patient.condition)
+        .filter(Boolean),
+    );
     return ["all", ...conditions];
-  }, [patients]);
+  }, [allPatientsData?.data]);
 
   const hasActiveFilters =
     Boolean(search) ||

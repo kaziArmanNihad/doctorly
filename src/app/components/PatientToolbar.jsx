@@ -41,6 +41,8 @@ function PatientToolbar({
             className="hidden text-[#8A938D] sm:block"
           />
 
+          {/* Condition filter */}
+          {/* want to do condition filter from all patients */}
           <FilterSelect
             value={condition}
             options={conditions}
@@ -48,6 +50,7 @@ function PatientToolbar({
             onChange={onConditionChange}
           />
 
+          {/* Doctor filter */}
           <FilterSelect
             value={doctor}
             options={doctors}
