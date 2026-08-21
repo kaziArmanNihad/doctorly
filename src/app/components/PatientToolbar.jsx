@@ -42,7 +42,6 @@ function PatientToolbar({
           />
 
           {/* Condition filter */}
-          {/* want to do condition filter from all patients */}
           <FilterSelect
             value={condition}
             options={conditions}
